@@ -1,0 +1,12 @@
+{
+  "commit": {
+    "commit": "6fae6b1a9f6fcae241a8cb6f263bb659d654b889",
+    "author": "Scott Chamberlain <sckott@fastmail.com>",
+    "time": "2021-06-12 00:04:53",
+    "files": 2,
+    "merge": false,
+    "message": "update other two vignettes\n"
+  },
+  "remote": "https://github.com/ropensci/rgbif",
+  "pkg": "rgbif"
+}

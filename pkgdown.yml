@@ -1,0 +1,13 @@
+pandoc: '2.5'
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  downloads: downloads.html
+  issues: issues.html
+  rgbif: rgbif.html
+  taxonomic_names: taxonomic_names.html
+last_built: 2021-07-10T18:46Z
+urls:
+  reference: https://docs.ropensci.org/rgbif/reference
+  article: https://docs.ropensci.org/rgbif/articles
+
