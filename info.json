@@ -1,0 +1,12 @@
+{
+  "commit": {
+    "commit": "3aa45ca50d1d39100d1337cf94204f60333bd343",
+    "author": "John Waller <ftw712@ku.dk>",
+    "time": "2024-02-23 15:01:14",
+    "files": 1,
+    "merge": false,
+    "message": "dev version bump\n"
+  },
+  "repo": "https://github.com/ropensci/rgbif",
+  "pkg": "rgbif"
+}
