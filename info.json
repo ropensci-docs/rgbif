@@ -1,0 +1,12 @@
+{
+  "commit": {
+    "commit": "467e5e1c135067c44771238a131d7df770476408",
+    "author": "Matthew Blissett <matt@blissett.me.uk>",
+    "time": "2024-10-16 09:53:59",
+    "files": 1,
+    "merge": false,
+    "message": "Additional advice on alternatives to polygon downloads.\n\nWarning about including the UK's territories.\n"
+  },
+  "repo": "https://github.com/ropensci/rgbif",
+  "pkg": "rgbif"
+}
