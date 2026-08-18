@@ -1,0 +1,282 @@
+# Match names in the GBIF backbone taxonomy in a checklist.
+
+Match names in the GBIF backbone taxonomy in a checklist.
+
+## Usage
+
+``` r
+name_backbone_checklist(
+  name_data,
+  rank = NULL,
+  kingdom = NULL,
+  phylum = NULL,
+  class = NULL,
+  order = NULL,
+  superfamily = NULL,
+  family = NULL,
+  subfamily = NULL,
+  tribe = NULL,
+  subtribe = NULL,
+  genus = NULL,
+  subgenus = NULL,
+  species = NULL,
+  usageKey = NULL,
+  taxonID = NULL,
+  taxonConceptID = NULL,
+  scientificNameID = NULL,
+  scientificNameAuthorship = NULL,
+  genericName = NULL,
+  specificEpithet = NULL,
+  infraspecificEpithet = NULL,
+  verbatimTaxonRank = NULL,
+  exclude = NULL,
+  strict = NULL,
+  verbose = NULL,
+  checklistKey = "7ddf754f-d193-4cc9-b351-99906754a03b",
+  bucket_size = 300,
+  sleep = 1,
+  curlopts = list(http_version = 2)
+)
+```
+
+## Arguments
+
+- name_data:
+
+  name_data (data.frame or vector) see details. (required)
+
+- rank:
+
+  (character) Filter by taxonomic rank. See API reference for available
+  values.
+
+- kingdom:
+
+  (character) Kingdom to match.
+
+- phylum:
+
+  (character) Phylum to match.
+
+- class:
+
+  (character) Class to match.
+
+- order:
+
+  (character) Order to match.
+
+- superfamily:
+
+  (character) Superfamily to match.
+
+- family:
+
+  (character) Family to match.
+
+- subfamily:
+
+  (character) Subfamily to match.
+
+- tribe:
+
+  (character) Tribe to match.
+
+- subtribe:
+
+  (character) Subtribe to match.
+
+- genus:
+
+  (character) Genus to match.
+
+- subgenus:
+
+  (character) Subgenus to match.
+
+- species:
+
+  (character) Species to match.
+
+- usageKey:
+
+  (character) The usage key to look up. When provided, all other fields
+  are ignored.
+
+- taxonID:
+
+  (character) The taxon ID to look up. Matches to a taxonID will take
+  precedence over scientificName values supplied. A comparison of the
+  matched scientific and taxonID is performed tocheck for
+  inconsistencies.
+
+- taxonConceptID:
+
+  (character) The taxonConceptID to match. Matches to a taxonConceptID
+  will take precedence over scientificName values supplied. A comparison
+  of the matched scientific and taxonConceptID is performed to check for
+  inconsistencies.
+
+- scientificNameID:
+
+  (character) Matches to a scientificNameID will take precedence over
+  scientificName values supplied. A comparison of the matched scientific
+  and scientificNameID is performed to check for inconsistencies.
+
+- scientificNameAuthorship:
+
+  (character) The scientific name authorship to match against.
+
+- genericName:
+
+  (character) Generic part of the name to match when given as atomised
+  parts instead of the full name parameter.
+
+- specificEpithet:
+
+  (character) Specific epithet to match.
+
+- infraspecificEpithet:
+
+  (character) Infraspecific epithet to match.
+
+- verbatimTaxonRank:
+
+  (character) Filters by free text taxon rank.
+
+- exclude:
+
+  (character) An array of usage keys to exclude from the match.
+
+- strict:
+
+  (logical) If set to true, fuzzy matches only the given name, but never
+  a taxon in the upper classification.
+
+- verbose:
+
+  (logical) If true it shows alternative matches which were considered
+  but then rejected.
+
+- checklistKey:
+
+  (character) The key of a checklist to use. The default is COL
+  (Catalogue of Life) Extended Release with UUID
+  "7ddf754f-d193-4cc9-b351-99906754a03b".
+
+- bucket_size:
+
+  (integer) Number of requests to make in parallel. Default: 300. Lower
+  this number if you get HTTP 0 errors.
+
+- sleep:
+
+  (integer) Number of seconds to wait between batches of requests.
+  Default: 1 second.
+
+- curlopts:
+
+  A list of curl options passed on to
+  [`httr::GET()`](https://httr.r-lib.org/reference/GET.html).#'
+
+## Value
+
+A `data.frame` of matched names.
+
+## Details
+
+This function is an alternative for
+[`name_backbone()`](https://docs.ropensci.org/rgbif/reference/name_backbone.md),
+which will work with a list of names (a vector or a data.frame). The
+`data.frame` can have any of the arguments as column names. The
+arguments can also be used as default values, and then don't need to be
+repeated as values in the input `name_data`. If only one column is
+present, then that column is assumed to be the scientificName column.
+
+The input columns will be returned as
+"verbatim_scientificName","verbatim_rank", "verbatim_phylum" ect.
+
+If `verbose=TRUE`, a column called `is_alternative` will be returned,
+which species if a name was originally a first choice or not.
+`is_alternative=TRUE` means the name was not is not considered to be the
+best match by GBIF.
+
+Default values for any of the other arguments can can be supplied. If a
+default value is supplied, the values for these fields are ignored in
+`name_data`, and the default value is used instead. This is most useful
+if you have a list of names and you know they are all plants, insects,
+birds, ect. You can also input multiple values, if they are the same
+length as list of names you are trying to match.
+
+This function can also be used with a character vector of names. In that
+case no column names are needed of course.
+
+This function is very similar to the GBIF species-lookup tool.
+<https://www.gbif.org/tools/species-lookup>.
+
+If you have 1000s of names to match, it can take some minutes to get
+back all of the matches. I have tested it with 60K names. Scientific
+names with author details usually get better matches.
+
+See also article [Working With Taxonomic
+Names](https://docs.ropensci.org/rgbif/articles/taxonomic_names.html).
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+name_data <- data.frame(
+ scientificName = c(
+   "Cirsium arvense (L.) Scop.", # a plant
+   "Calopteryx splendens (Harris, 1780)", # an insect
+   "Puma concolor (Linnaeus, 1771)", # a big cat
+   "Ceylonosticta alwisi (Priyadarshana & Wijewardhane, 2016)", # newly discovered insect 
+   "Puma concuolor (Linnaeus, 1771)", # a mis-spelled big cat
+   "Fake species (John Waller 2021)", # a fake species
+   "Calopteryx" # Just a Genus   
+ ), description = c(
+   "a plant",
+   "an insect",
+   "a big cat",
+   "newly discovered insect",
+   "a mis-spelled big cat",
+   "a fake species",
+   "just a GENUS"
+ ), 
+ kingdom = c(
+   "Plantae",
+   "Animalia",
+   "Animalia",
+   "Animalia",
+   "Animalia",
+   "Johnlia",
+   "Animalia"
+ ))
+
+name_backbone_checklist(name_data)
+
+# return more than 1 result per name
+name_backbone_checklist(name_data,verbose=TRUE) 
+
+# works with just vectors too 
+name_list <- c(
+"Cirsium arvense (L.) Scop.", 
+"Calopteryx splendens (Harris, 1780)", 
+"Puma concolor (Linnaeus, 1771)", 
+"Ceylonosticta alwisi (Priyadarshana & Wijewardhane, 2016)", 
+"Puma concuolor", 
+"Fake species (John Waller 2021)", 
+"Calopteryx")
+
+name_backbone_checklist(name_list)
+name_backbone_checklist(name_list,verbose=TRUE)
+name_backbone_checklist(name_list,strict=TRUE) 
+
+# default values
+name_backbone_checklist(c("Aloe arborecens Mill.",
+"Cirsium arvense (L.) Scop."),kingdom="Plantae")
+name_backbone_checklist(c("Aloe arborecens Mill.",
+"Calopteryx splendens (Harris, 1780)"),kingdom=c("Plantae","Animalia"))
+
+} # }
+```

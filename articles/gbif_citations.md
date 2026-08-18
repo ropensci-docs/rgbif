@@ -1,0 +1,173 @@
+# Citing GBIF Mediated Data
+
+Data accessed through the GBIF network is free for all, **but not free
+of obligations**.
+
+Under the terms of the GBIF data user agreement, users who download data
+agree to **cite a DOI**. Good citation also rewards data-publishing
+institutions and individuals by reinforcing the value of sharing open
+data and demonstrating its impact to their funders.
+
+Please do read GBIF’s [citation
+guidelines](https://www.gbif.org/citation-guidelines).
+
+## The Best Way to Cite
+
+The best way to [get data from
+GBIF](https://docs.ropensci.org/rgbif/articles/getting_occurrence_data.html)
+is with
+[`rgbif::occ_download()`](https://docs.ropensci.org/rgbif/reference/occ_download.md).
+
+``` r
+
+occ_download(pred("taxonKey","6R3ZG"))
+```
+
+The **newest version of rgbif** will give you the **DOI** you need to
+make a good citation.
+
+    <<gbif download>>
+      Your download is being processed by GBIF:
+      https://www.gbif.org/occurrence/download/0056004-210914110416597
+      Most downloads finish within 15 min.
+      Check status with
+      occ_download_wait('0056004-210914110416597')
+      After it finishes, use
+      d <- occ_download_get('0056004-210914110416597') %>%
+        occ_download_import()
+      to retrieve your download.
+    Download Info:
+      Username: jwaller
+      E-mail: jwaller@gbif.org
+      Format: DWCA
+      Download key: 0056004-210914110416597
+      Created: 2021-11-17T09:17:21.828+00:00
+    Citation Info:  
+      Please always cite the download DOI when using this data.
+      https://www.gbif.org/citation-guidelines
+      DOI: 10.15468/dl.9hqqbn
+      Citation:
+      GBIF Occurrence Download https://doi.org/10.15468/dl.9hqqbn Accessed from R via rgbif (https://github.com/ropensci/rgbif) on 2021-11-17
+
+For this download, you would use this DOI-citation:
+
+    GBIF Occurrence Download https://doi.org/10.15468/dl.9hqqbn Accessed from R via rgbif (https://github.com/ropensci/rgbif) on 2021-11-17
+
+You could also get this citation by using
+[`rgbif::gbif_citation()`](https://docs.ropensci.org/rgbif/reference/gbif_citation.md)
+
+``` r
+
+gbif_citation("0056004-210914110416597") # using the downloadkey
+```
+
+These would be the **preferred and easiest** ways to create a citation
+of GBIF mediated data. Below I will describe other special cases that
+you might want to consider.
+
+## Register a Derived Dataset
+
+[Derived datasets](https://www.gbif.org/derived-dataset/about) are a new
+citation feature on GBIF. Derived datasets are citable records of
+GBIF-mediated occurrence data. To register a derived dataset, you will
+need to create a simple text file with two columns:
+
+1.  A GBIF datasetkey (uuid)
+2.  A count of the number of occurrences from each dataset
+
+This allows GBIF to give credit to each involved dataset. The file you
+register with GBIF should look like the table below.
+
+| datasetkey                           | n   |
+|--------------------------------------|-----|
+| 4fa7b334-ce0d-4e88-aaae-2e0c138d049e | 213 |
+| 906e6978-e292-4a8b-9c39-adf6bb0f3323 | 2   |
+| 721a99a4-71f4-4466-b346-83c367889238 | 35  |
+
+Remember that you should also upload your filtered GBIF dataset of
+occurrences to a **public repository** like Zenodo.
+
+There are 3 main reasons to register a derived dataset:
+
+1.  A GBIF download that has been [filtered/reduced
+    significantly](https://data-blog.gbif.org/post/gbif-filtering-guide/)
+    (e.g. CoordinateCleaner).
+2.  Data accessed through a [cloud
+    service](https://data-blog.gbif.org/post/aws-and-gbif/).
+3.  Occurrences obtained using
+    [`occ_search()`](https://docs.ropensci.org/rgbif/reference/occ_search.md)
+    or similar.
+
+Before using option 3, it is important to consider: **could my
+[`occ_search()`](https://docs.ropensci.org/rgbif/reference/occ_search.md)
+have been accomplished with an
+[`occ_download()`](https://docs.ropensci.org/rgbif/reference/occ_download.md)**?
+The answer is almost always **YES!**.
+
+Here is a simple example of using
+[`rgbif::derived_dataset()`](https://docs.ropensci.org/rgbif/reference/derived_dataset.md).
+
+``` r
+
+library(rgbif)
+library(dplyr)
+library(CoordinateCleaner)
+
+gbif_download <- occ_download_get('0056004-210914110416597') %>%
+    occ_download_import()
+    
+gbif_download_cleaned <- gbif_download %>%
+    setNames(tolower(names(.))) %>% 
+    filter(occurrencestatus  == "PRESENT") %>%
+    filter(year >= 1900) %>% 
+    cc_cen(buffer = 2000) %>% # remove country centroids within 2km 
+    cc_inst(buffer = 2000) %>% # remove zoo and herbaria within 2km 
+    cc_sea() # remove from ocean
+
+readr::write_tsv(gbif_download_cleaned,"cleaned_data_for_zenodo.tsv")
+```
+
+At this point, you would have to stop and **upload to public
+repository**.
+
+<https://zenodo.org/>
+
+Once you are finished, you can run the following, with the
+**source_url** being the link to your publicly accessible modified data.
+You will need to [setup your GBIF
+credentials](https://docs.ropensci.org/rgbif/articles/gbif_credentials.html)
+for this to work.
+
+``` r
+
+# https://www.gbif.org/derived-dataset/about)
+
+derived_data <- gbif_download_clean %>%
+group_by(datasetkey) %>% 
+count()
+
+derived_dataset_prep(
+citation_data = derived_data,
+title = "Test Derived Dataset",
+description = "This data was filtered using CoordinateCleaner.",
+source_url = "https://zenodo.org/record/4246090#.YPGS2OgzZPY"
+)
+
+# If output looks ok, run derived_dataset to register the dataset on GBIF
+# derived_dataset(
+# citation_data = data,
+# title = "Test Derived Dataset",
+# description = "This data was filtered using CoordinateCleaner.",
+# source_url = "https://zenodo.org/record/4246090#.YPGS2OgzZPY"
+# )
+```
+
+Check your derived-dataset [user
+page](https://www.gbif.org/derived-dataset) to see if it worked.
+
+## Further Reading
+
+<https://www.gbif.org/citation-guidelines>  
+<https://data-blog.gbif.org/post/derived-datasets/>  
+<https://www.gbif.org/derived-dataset/register>  
+<https://discourse.gbif.org/t/gbif-exports-as-public-datasets-in-cloud-environments/1835>  

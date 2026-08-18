@@ -1,0 +1,21 @@
+pandoc: 3.8.3
+pkgdown: 2.2.1
+pkgdown_sha: ~
+articles:
+  col_migration_guide: col_migration_guide.html
+  creating_maps_from_occurrences: creating_maps_from_occurrences.html
+  downloading_a_long_species_list: downloading_a_long_species_list.html
+  effectively_using_occ_search: effectively_using_occ_search.html
+  gbif_citations: gbif_citations.html
+  gbif_credentials: gbif_credentials.html
+  gbif_sql_downloads: gbif_sql_downloads.html
+  getting_dataset_info: getting_dataset_info.html
+  getting_occurrence_data: getting_occurrence_data.html
+  multiple_values: multiple_values.html
+  occ_counts: occ_counts.html
+  rgbif: rgbif.html
+  taxonomic_names: taxonomic_names.html
+last_built: 2026-08-18T12:08Z
+urls:
+  reference: https://docs.ropensci.org/rgbif/reference
+  article: https://docs.ropensci.org/rgbif/articles

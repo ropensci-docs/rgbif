@@ -1,0 +1,550 @@
+# Getting Occurrence Data From GBIF
+
+There are two ways to get occurrence data from GBIF:
+
+1.  [occ_download()](https://docs.ropensci.org/rgbif/reference/occ_download.html):
+    unlimited records. Useful for research and citation.
+2.  [occ_search()](https://docs.ropensci.org/rgbif/reference/occ_search.html):
+    limited to 100K records. Useful primarily for testing.
+
+For users interested in aggregating occurrence data or selecting
+specific columns, see the [GBIF SQL
+Downloads](https://docs.ropensci.org/rgbif/articles/gbif_sql_downloads.html)
+vignette.
+
+The function
+[`occ_search()`](https://docs.ropensci.org/rgbif/reference/occ_search.md)
+(and related function
+[`occ_data()`](https://docs.ropensci.org/rgbif/reference/occ_data.md))
+**should not** be used for serious research. Users sometimes find it
+easier to use
+[`occ_search()`](https://docs.ropensci.org/rgbif/reference/occ_search.md)
+rather than
+[`occ_download()`](https://docs.ropensci.org/rgbif/reference/occ_download.md)
+because they do not need to supply a username or password, and also do
+not need to wait for a download to finish. However, any serious research
+project should always use
+[`occ_download()`](https://docs.ropensci.org/rgbif/reference/occ_download.md)
+instead.
+
+## occ_download()
+
+[`occ_download()`](https://docs.ropensci.org/rgbif/reference/occ_download.md)
+is the **best way** to get GBIF mediated occurrences.
+
+The main functions related to downloads are:
+
+- [occ_download()](https://docs.ropensci.org/rgbif/reference/occ_download.html):
+  start a download on GBIF servers.
+- [occ_download_prep()](https://docs.ropensci.org/rgbif/reference/occ_download_prep.html):
+  preview a download request before sending to GBIF.
+- [occ_download_get()](https://docs.ropensci.org/rgbif/reference/occ_download_get.html):
+  retrieve a download from GBIF to your computer.
+- [occ_download_import()](https://docs.ropensci.org/rgbif/reference/occ_download_import.html):
+  load a download from your computer to R.
+
+To make a download request,
+[`occ_download()`](https://docs.ropensci.org/rgbif/reference/occ_download.md)
+uses [helper
+functions](https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.html)
+starting with **pred**. These functions **define filters** on the large
+GBIF occurrence table, so that only a usable subset is returned. The
+predicate functions are named for the ‘type’ of operation they do,
+following the terminology [used by
+GBIF](https://www.gbif.org/developer/occurrence#predicates).
+
+**Note:** By default, **rgbif** now uses the COL (Catalogue of Life)
+Extended Release taxonomy, which returns alpha-numeric taxon keys (e.g.,
+“Q2M4”). The examples below use these alpha-numeric keys.
+
+| function | description | example |
+|:---|:---|:---|
+| [`pred()`](https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.md) | key is equal to value | `pred("taxonKey","Q2M4")` |
+| [`pred_lt()`](https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.md) | key is less than value. | `pred_lt("coordinateUncertaintyInMeters",5000)` |
+| [`pred_lte()`](https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.md) | key is less than or equal to value | `pred_lte("year", 1900)` |
+| [`pred_gt()`](https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.md) | key is greater than value | `pred_gt("elevation", 1000)` |
+| [`pred_gte()`](https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.md) | key is greater than or equal to value | `pred_gte("depth", 1000)` |
+| [`pred_not()`](https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.md) | key is not value | `pred_not("taxonKey","Q2M4")` |
+| [`pred_like()`](https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.md) | key like pattern | `pred_like("catalogNumber","PAPS5-560*")` |
+| [`pred_within()`](https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.md) | lat-lon values within WKT polygon | `pred_within('POLYGON((-14 42, 9 38, -7 26, -14 42))')` |
+| [`pred_notnull()`](https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.md) | column is not NULL | `pred_notnull("establishmentMeans")` |
+| [`pred_isnull()`](https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.md) | column is NULL | `pred_isnull("recordedBy")` |
+| [`pred_and()`](https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.md) | a logical and of predicate functions | `pred_and(pred_lte("elevation",5000),pred("taxonKey","Q2M4"))` |
+| [`pred_or()`](https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.md) | a logical or of predicate functions | `pred_or(pred_gt("elevation", 1000), pred_isnull("elevation"))` |
+| [`pred_in()`](https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.md) | values are in the column | `pred_in("taxonKey",c("Q2M4","9WLSS","Q2N2"))` |
+
+**Note on license values:** When filtering by license, use underscores
+instead of spaces (e.g., `"CC_BY_4_0"` not `"CC BY 4.0"`). Valid license
+values include `"CC_BY_4_0"`, `"CC_BY_NC_4_0"`, `"CC0_1_0"`.
+
+## A Very Simple Download
+
+It is required to set up your **GBIF credentials** to make downloads
+from GBIF. I suggest that you follow this [short
+tutorial](https://docs.ropensci.org/rgbif/articles/gbif_credentials.html)
+before continuing.
+
+The following will download all occurrences of *Calopteryx splendens*.
+You can use `name_backbone("Calopteryx splendens")` to find the taxonKey
+(usageKey), which returns “Q2M4” with COL XR.
+
+``` r
+
+# remember to set up your GBIF credentials
+# Uses COL (Catalogue of Life) Extended Release by default
+occ_download(pred("taxonKey", "Q2M4"),format = "SIMPLE_CSV")
+```
+
+    <<gbif download>>
+      Your download is being processed by GBIF:
+      https://www.gbif.org/occurrence/download/0079311-210914110416597
+      Most downloads finish within 15 min.
+      Check status with
+      occ_download_wait('0079311-210914110416597')
+      After it finishes, use
+      d <- occ_download_get('0079311-210914110416597') %>%
+        occ_download_import()
+      to retrieve your download.
+    Download Info:
+      Username: jwaller
+      E-mail: jwaller@gbif.org
+      Format: SIMPLE_CSV
+      Download key: 0079311-210914110416597
+      Created: 2021-12-14T13:02:09.610+00:00
+    Citation Info:  
+      Please always cite the download DOI when using this data.
+      https://www.gbif.org/citation-guidelines
+      DOI: 10.15468/dl.dqp6a3
+      Citation:
+      GBIF Occurrence Download https://doi.org/10.15468/dl.dqp6a3 Accessed from R via rgbif (https://github.com/ropensci/rgbif) on 2021-12-14
+
+The print out tells us that we can wait for the download to finish with
+[`occ_download_wait()`](https://docs.ropensci.org/rgbif/reference/occ_download_wait.md).
+Most downloads under 100K records run very quickly. You can also check
+the status of a download on your [GBIF user
+page](https://www.gbif.org/user/download).
+
+``` r
+
+occ_download_wait('0079311-210914110416597') # checks if download is finished
+```
+
+The print out tells you can get this download using
+[`occ_download_get()`](https://docs.ropensci.org/rgbif/reference/occ_download_get.md)
+and
+[`occ_download_import()`](https://docs.ropensci.org/rgbif/reference/occ_download_import.md).
+
+``` r
+
+d <- occ_download_get('0079311-210914110416597') %>%
+  occ_download_import()
+```
+
+It is also possible save your download into an object and pass that into
+[`occ_download_get()`](https://docs.ropensci.org/rgbif/reference/occ_download_get.md).
+
+``` r
+
+# Uses COL XR alpha-numeric key "Q2M4" for Calopteryx splendens
+gbif_download <- occ_download(pred("taxonKey", "Q2M4"),format = "SIMPLE_CSV")
+
+occ_download_wait(gbif_download)
+
+d <- occ_download_get(gbif_download) %>%
+  occ_download_import()
+```
+
+Note that the **citation** appears in the print out. This is what you
+would use if used this download in a research paper. Please also see
+GBIF’s [citation guidelines](https://www.gbif.org/citation-guidelines)
+when using GBIF mediated data.
+
+    GBIF Occurrence Download https://doi.org/10.15468/dl.dqp6a3 Accessed from R via rgbif (https://github.com/ropensci/rgbif) on 2021-12-14
+
+You could also get this citation by running
+[`gbif_citation()`](https://docs.ropensci.org/rgbif/reference/gbif_citation.md)
+or checking your [user page](https://www.gbif.org/user/download).
+
+``` r
+
+gbif_citation('0078589-210914110416597')
+# or
+# gbif_citation(gbif_download)
+```
+
+## A More Realistic Download
+
+Typically GBIF downloads follow a particular pattern, and the same
+filters are used again and again. These are some common filters that you
+should probably be using.
+
+``` r
+
+occ_download(
+pred("hasGeospatialIssue", FALSE),
+pred("hasCoordinate", TRUE),
+pred("occurrenceStatus","PRESENT"), 
+pred_not(pred_in("basisOfRecord",c("FOSSIL_SPECIMEN","LIVING_SPECIMEN"))),
+pred("taxonKey", "Q2M4"), # COL XR alpha-numeric key for Calopteryx splendens
+format = "SIMPLE_CSV"
+)
+```
+
+This download will …
+
+- Remove default geospatial issues.
+- Keep only records with coordinates.
+- Remove absent records.
+- Remove fossils and living specimens
+- Retrieve all *Calopteryx splendens*.
+
+The code above is commonly used, but pretty long. This is why
+[`pred_default()`](https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.md)
+was created.
+
+``` r
+
+# shorter equivalent to download above
+occ_download(
+pred_default(), 
+pred("taxonKey", "Q2M4"), # COL XR alpha-numeric key
+format = "SIMPLE_CSV"
+)
+```
+
+## Filtering by License
+
+If you want to download only records with specific licenses, use
+[`pred()`](https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.md)
+or
+[`pred_in()`](https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.md)
+with the license key. **Important:** Always use underscores in license
+values, not spaces.
+
+``` r
+
+# Download records with CC_BY_4_0 license only
+occ_download(
+pred("taxonKey", "Q2M4"), # COL XR alpha-numeric key
+pred("license", "CC_BY_4_0"),
+format = "SIMPLE_CSV"
+)
+
+# Download records with multiple acceptable licenses
+occ_download(
+pred("taxonKey", "6Q225"), 
+pred_in("license", c("CC_BY_4_0", "CC_BY_NC_4_0", "CC0_1_0")),
+format = "SIMPLE_CSV"
+)
+```
+
+## Downoad formats
+
+[`occ_download()`](https://docs.ropensci.org/rgbif/reference/occ_download.md)
+can fetch data from GBIF in a few formats:
+
+1.  `DWCA` is the default format. This is the most complete format and
+    contains all of the data and meta-data available from GBIF. When
+    using `occ_download_get() %>% occ_download_import()` will still
+    return only the occurrence.txt file. The other files can be accessed
+    by unzipping the download.
+
+2.  `SIMPLE_CSV` format contains only a selection of commonly used
+    terms.
+
+3.  `SPECIES_LIST` format is a simple list of species names. This is
+    useful for getting a list of species names from a download. This
+    format will not work with
+    [`occ_download_import()`](https://docs.ropensci.org/rgbif/reference/occ_download_import.md).
+
+4.  `SIMPLE_PARQUET` format is a compressed Apache Parquet file. This
+    format is useful for large downloads because it is more efficient
+    than CSV. This format will not work with
+    [`occ_download_import()`](https://docs.ropensci.org/rgbif/reference/occ_download_import.md).
+    You will need to use a package like `arrow` to read the data.
+
+Users can see the columns included in a download by using
+[`occ_download_describe()`](https://docs.ropensci.org/rgbif/reference/occ_download_describe.md).
+
+``` r
+
+occ_download_describe("simpleCsv")$fields$name                                           
+occ_download_describe("dwca")$interpretedFields$name
+```
+
+## Long species list downloads
+
+Another common download pattern is **long species list downloads**.
+There is a tutorial about downloading from a long list of species
+[here](https://docs.ropensci.org/rgbif/articles/downloading_a_long_species_list.html).
+
+## A Complex Download For Illustration
+
+Here I make an overly complex download to highlight some of the
+capabilities of
+[`occ_download()`](https://docs.ropensci.org/rgbif/reference/occ_download.md).
+Most useful downloads are much simpler.
+
+``` r
+
+occ_download(
+type="and",
+    pred("taxonKey", "Q2M4"), # COL XR alpha-numeric key for Calopteryx splendens
+    pred("hasGeospatialIssue", FALSE),
+    pred("hasCoordinate", TRUE),
+    pred("occurrenceStatus","PRESENT"), 
+    pred_gte("year", 1900),
+    pred_not(pred_in("basisOfRecord",c("FOSSIL_SPECIMEN","LIVING_SPECIMEN"))),
+  pred_or(
+    pred("country","ZA"),
+    pred("gadm","ETH")
+    ),
+  pred_or(
+    pred_not(pred_in("establishmentMeans",c("MANAGED","INTRODUCED"))),
+    pred_isnull("establishmentMeans")
+    ),
+  pred_or(  
+    pred_lt("coordinateUncertaintyInMeters",10000),
+    pred_isnull("coordinateUncertaintyInMeters")
+    ),
+format = "SIMPLE_CSV"
+)
+```
+
+This download will …
+
+- `pred("taxonKey", "Q2M4")` : all *Calopteryx splendens* records
+- `pred("hasGeospatialIssue", FALSE)` : remove default geospatial
+  issues.
+- `pred("hasCoordinate", TRUE)` : keep only records with coordinates.
+- `pred("occurrenceStatus","PRESENT")` : remove absent records.
+- `pred_not(pred_in("basisOfRecord",c("FOSSIL_SPECIMEN","LIVING_SPECIMEN")))`:
+  Remove fossils and living specimens
+- `pred_gte("year", 1900)` : after/or year 1900
+- `pred_or(pred("country","ZA"),pred("gadm","ETH"))` in South Africa or
+  Ethiopia, using separate polygon systems. See
+  [`enumeration_country()`](https://docs.ropensci.org/rgbif/reference/enumeration.md)
+  for country codes.
+- `pred_or(pred_not(pred_in("establishmentMeans",c("MANAGED","INTRODUCED"))),pred_isnull("establishmentMeans"))`
+  : establishmentMeans column does not contain managed or introduced
+  species, but can be left blank.
+- `pred_or(pred_lt("coordinateUncertaintyInMeters",10000),pred_isnull("coordinateUncertaintyInMeters"))`
+  : coordinateUncertaintyInMeters is less 10K meter or is left blank.
+- `format = "SIMPLE_CSV"` : return just a tsv file of occurrences.
+
+## Not Downloads
+
+Another sometimes useful pattern is **downloading all occurrences except
+some group**. Birds make up a [large
+portion](https://www.gbif.org/occurrence/taxonomy) of GBIF occurrences.
+If you wanted to download everything but birds, you could use
+[`pred_not()`](https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.md).
+(Note: for GBIF Backbone numeric keys, you would need to set
+`checklistKey = "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c"`)
+
+``` r
+
+# Get COL XR alpha-numeric key for birds (class Aves)
+# bird_key <- name_backbone("Aves")$usageKey
+# occ_download(pred_not("taxonKey", bird_key),format = "SIMPLE_CSV")
+# Example with Insecta (key "Q3F")
+occ_download(pred_not("taxonKey", "Q3F"),format = "SIMPLE_CSV") # Exclude all Insecta
+```
+
+## Big Polygon Downloads
+
+Sometimes users will want to download records using a large polygon. It
+is worth noting that many land-based polygons can be captured using a
+[GADM
+filter](https://www.gbif.org/occurrence/map?gadm_gid=BWA&gadm_gid=VAT&gadm_gid=BHS.17_1&gadm_gid=TWN&gadm_gid=NZL.2_1),
+and land+sea polygons using the [ISO country/area
+filter](https://www.gbif.org/occurrence/map?country=FO&country=IS&country=SJ&has_coordinate=true&has_geospatial_issue=false).
+A download using these filters will be faster and more accurate than one
+with a custom polygon.
+
+Here I will download all occurrences within this biodiversity hotspot
+known as
+[Wallacea](https://www.gbif.org/occurrence/map?has_geospatial_issue=false&geometry=POLYGON%20((127.0171%204.9391,%20124.5973%204.7960,%20121.7968%203.7617,%20119.0816%203.0776,%20119.1999%200.5229,%20117.3936%20-5.1010,%20116.4971%20-6.7425,%20115.9096%20-8.2031,%20115.5687%20-9.9150,%20117.2358%20-10.0975,%20120.9361%20-11.4096,%20122.5775%20-11.8123,%20123.5516%20-11.8544,%20125.5775%20-11.2832,%20128.6224%20-9.7196,%20131.1873%20-9.1914,%20132.1547%20-8.3925,%20133.4920%20-6.4151,%20133.6129%20-5.8375,%20133.5079%20-5.1369,%20133.1861%20-4.7011,%20131.4894%20-3.3231,%20129.8271%20-2.4649,%20129.3679%20-2.0044,%20129.1699%20-1.1486,%20129.7026%20-0.2859,%20129.7691%200.2902,%20129.4364%202.4420,%20128.9881%203.3626,%20128.3585%204.1683,%20127.7041%204.6918,%20127.0171%204.9391))).
+
+A polygon may contain a **maximum of 10,000 points**, but in practice
+this number might be less depending the complexity of the polygon. You
+also have to make sure your polygons are in “anticlockwise” ordering of
+points. See downloads
+[documentation](https://www.gbif.org/developer/occurrence#download).
+
+``` r
+
+# Simple code to go from shapefile to WKT
+# large_wkt <- sf::st_read("large_shapefile") %>% 
+# sf::st_geometry() %>% 
+# sf::st_as_text()
+
+large_wkt <- "POLYGON ((127.0171 4.9391, 124.5973 4.7960, 121.7968 3.7617,
+119.0816 3.0776, 119.1999 0.5229, 117.3936 -5.1010, 116.4971 -6.7425,
+115.9096 -8.2031, 115.5687 -9.9150, 117.2358 -10.0975, 120.9361 -11.4096,
+122.5775 -11.8123, 123.5516 -11.8544, 125.5775 -11.2832, 128.6224 -9.7196,
+131.1873 -9.1914, 132.1547 -8.3925, 133.4920 -6.4151, 133.6129 -5.8375,
+133.5079 -5.1369, 133.1861 -4.7011, 131.4894 -3.3231, 129.8271 -2.4649, 
+129.3679 -2.0044, 129.1699 -1.1486, 129.7026 -0.2859, 129.7691 0.2902, 
+129.4364 2.4420, 128.9881 3.3626, 128.3585 4.1683, 127.7041 4.6918,
+127.0171 4.9391))" 
+
+occ_download(pred_within(large_wkt),format = "SIMPLE_CSV"))
+```
+
+Due to changes in GBIF’s polygon interpretation, you might get an error
+when using polygons wound in the “wrong direction” (clockwise). For
+example, the R package `sf` returns WKT polygons clockwise by default.
+One solution is to use the `wk` package to reorient the polygon prior to
+feeding it to
+[`pred_within()`](https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.md).
+
+``` r
+
+wkt %>%
+  wk::wkt() %>% 
+  wk::wk_orient()
+```
+
+When generating polygons from public data sources, check the WKT is what
+you want using a site like [WKT Geometry
+Plotter](https://www.geometrymapper.com/). A common mistake is
+requesting a polygon for the United Kingdom, but finding it includes the
+UK’s territories of Bermuda, Pitcairn and so on.
+(`pred("country", "GB")` or
+`pred_in("country", c("GB", "IM", "GG", "JE"))` is much faster anyway.)
+
+## Downloading verbatim DWCA extensions
+
+GBIF now allows users to download DWCA extensions. These tables are
+combined and returned to the user as-is (“verbatim”). The
+`verbatim_extensions` argument only works when `format="DWCA"`.
+Otherwise, you will get a warning.
+
+``` r
+
+occ_download(
+  pred("taxonKey", "B8V3M"),
+  format = "DWCA",
+  verbatim_extensions = "http://rs.tdwg.org/dwc/terms/MeasurementOrFact"
+)
+```
+
+To view all of the available extensions use
+`rgbif::occ_download_describe("dwca")$verbatimExtensions`.
+
+## Downloading using different taxonomies
+
+**rgbif** now uses the **Catalogue of Life Extended Release (COL XR)**
+as the default taxonomy, which returns alpha-numeric taxon keys. To use
+the original **GBIF Backbone Taxonomy** instead, explicitly set
+`checklistKey = "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c"`.
+
+You need to use the corresponding taxonKey from the chosen taxonomy. You
+can find these keys using
+[`name_backbone()`](https://docs.ropensci.org/rgbif/reference/name_backbone.md)
+with the appropriate `checklistKey` parameter.
+
+``` r
+
+# COL XR (default) - returns alpha-numeric keys
+name_backbone("Calopteryx splendens")$usageKey
+# "Q2M4"
+
+occ_download(
+  pred("taxonKey", "Q2M4"),  # COL XR is now the default
+  format = "SIMPLE_CSV"
+)
+
+# GBIF Backbone Taxonomy - returns numeric keys
+backbone_uuid <- "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c"
+name_backbone("Calopteryx splendens", checklistKey = backbone_uuid)$usageKey
+# 4DXXM
+
+occ_download(
+  pred("taxonKey", "4DXXM"),  
+  checklistKey = backbone_uuid,  # Use GBIF Backbone
+  format = "SIMPLE_CSV"
+)
+```
+
+## Get just the EEZ waters of a country/area
+
+Sometimes GBIF users just want the **EEZ** (Exclusive Economic Zone)
+waters of a country. This is possible using the `gadm` filter and
+`pred_not`.
+
+``` r
+
+# download all occurrences in the EEZ of the UK
+
+occ_download(
+pred("country","GB"),
+pred_or(pred_not(pred("gadm","GBR")),
+pred_isnull("gadm")),
+format = "SIMPLE_CSV")
+```
+
+This works because the “country” includes the EEZ whereas the gadm
+filter include only the land area.
+
+## Filter Country Centroids
+
+> Sometimes GBIF data publishers will not know the exact lat-lon
+> location of a record and will enter the lat-long center of the country
+> instead. This is a data issue because users might be unaware that an
+> observation is pinned to a country center and assume it is a precise
+> location.
+
+It is possible to filter out **country/area centroids** in a download
+using the `distanceFromCentroidInMeters` filter.
+
+``` r
+
+# download occurrences that are at least 2km from a centroid in Sweden
+occ_download(
+pred_gte("distanceFromCentroidInMeters","2000"),
+pred("country","SE"),
+format = "SIMPLE_CSV")
+```
+
+GBIF currently uses only **PCLI** level centroids from the [catalogue of
+centroids](https://github.com/jhnwllr/catalogue-of-centroids).
+
+## Data Quality
+
+GBIF is a large data aggregator. It mediates occurrences records from a
+large variety of sources:
+
+- Museums
+- eDNA
+- Citizen Science Apps
+- Ecological Surveys
+- Camera Traps
+- Satellite Tracking
+- Herbaria
+- Paleontology
+- Research Projects
+
+For this reason, not all of the occurrences from GBIF are “fit for use”,
+meaning they are not suitable for a **particular** purpose or project.
+Some data-quality issues are so well understood that there are automated
+ways to detect and remove them from a dataset.
+
+- Country Centroids
+- Living Specimens
+- Fossils
+- Uncertain Records
+- Country Coordinate Mismatch
+- Zero-Zero Coordinate
+- Any-Zero Coordinates
+- Gridded Datasets
+
+Since **rgbif** is not a data cleaning package, please see the following
+resources for post-processing your occurrence downloads:
+
+- [Common things to look out for when post-processing GBIF
+  downloads](https://data-blog.gbif.org/post/gbif-filtering-guide/)
+- [CoordinateCleaner](https://docs.ropensci.org/CoordinateCleaner/)
+- [Data Quality
+  Webinar](https://www.gbif.org/event/2CAcHI4oxVK5ZgMnFszNUD/data-use-club-practical-sessions-data-quality)

@@ -1,0 +1,39 @@
+# Set Up Your GBIF Username and Password
+
+Some rgbif features require **GBIF login details**. Most notably if you
+want to run `occ_download`, you need to supply
+
+- **user** : Your GBIF username
+- **pwd** : Your GBIF password
+- **email** : Your e-mail
+
+The **best way** to allow rgbif access to your GBIF credentials is to
+save them in your **.Renviron** file.
+
+The easiest way to edit this file is by running:
+
+``` r
+
+install.packages("usethis")
+usethis::edit_r_environ()
+```
+
+Edit your **.Renviron** to look like this:
+
+    GBIF_USER="jwaller"
+    GBIF_PWD="safe_fake_password_123"
+    GBIF_EMAIL="jwaller@gbif.org"
+
+Now you should be able to run `occ_download` with no **user**, **pwd**,
+or **email**.
+
+``` r
+
+occ_download(pred("taxonKey", "6Q225"))
+```
+
+## Third party log in
+
+If you’ve only used Google, GitHub, ORCID, or other third-party methods
+to log in to GBIF, you’ll need to create a traditional GBIF username and
+password for `occ_download` and other functions that GBIF credentials.

@@ -1,0 +1,1541 @@
+# Search for GBIF occurrences
+
+Search for GBIF occurrences
+
+## Usage
+
+``` r
+occ_search(
+  taxonKey = NULL,
+  scientificName = NULL,
+  country = NULL,
+  publishingCountry = NULL,
+  hasCoordinate = NULL,
+  typeStatus = NULL,
+  recordNumber = NULL,
+  lastInterpreted = NULL,
+  continent = NULL,
+  geometry = NULL,
+  geom_big = "asis",
+  geom_size = 40,
+  geom_n = 10,
+  recordedBy = NULL,
+  recordedByID = NULL,
+  identifiedByID = NULL,
+  basisOfRecord = NULL,
+  datasetKey = NULL,
+  eventDate = NULL,
+  catalogNumber = NULL,
+  year = NULL,
+  month = NULL,
+  decimalLatitude = NULL,
+  decimalLongitude = NULL,
+  elevation = NULL,
+  depth = NULL,
+  institutionCode = NULL,
+  collectionCode = NULL,
+  hasGeospatialIssue = NULL,
+  issue = NULL,
+  search = NULL,
+  mediaType = NULL,
+  subgenusKey = NULL,
+  repatriated = NULL,
+  phylumKey = NULL,
+  kingdomKey = NULL,
+  classKey = NULL,
+  orderKey = NULL,
+  familyKey = NULL,
+  genusKey = NULL,
+  speciesKey = NULL,
+  establishmentMeans = NULL,
+  degreeOfEstablishment = NULL,
+  protocol = NULL,
+  license = NULL,
+  organismId = NULL,
+  publishingOrg = NULL,
+  stateProvince = NULL,
+  waterBody = NULL,
+  locality = NULL,
+  occurrenceStatus = "PRESENT",
+  gadmGid = NULL,
+  coordinateUncertaintyInMeters = NULL,
+  verbatimScientificName = NULL,
+  eventId = NULL,
+  identifiedBy = NULL,
+  networkKey = NULL,
+  verbatimTaxonId = NULL,
+  occurrenceId = NULL,
+  organismQuantity = NULL,
+  organismQuantityType = NULL,
+  relativeOrganismQuantity = NULL,
+  iucnRedListCategory = NULL,
+  lifeStage = NULL,
+  isInCluster = NULL,
+  distanceFromCentroidInMeters = NULL,
+  geoDistance = NULL,
+  sex = NULL,
+  dwcaExtension = NULL,
+  gbifId = NULL,
+  gbifRegion = NULL,
+  projectId = NULL,
+  programme = NULL,
+  preparations = NULL,
+  datasetId = NULL,
+  datasetName = NULL,
+  publishedByGbifRegion = NULL,
+  island = NULL,
+  islandGroup = NULL,
+  taxonId = NULL,
+  taxonConceptId = NULL,
+  taxonomicStatus = NULL,
+  acceptedTaxonKey = NULL,
+  collectionKey = NULL,
+  institutionKey = NULL,
+  otherCatalogNumbers = NULL,
+  georeferencedBy = NULL,
+  installationKey = NULL,
+  hostingOrganizationKey = NULL,
+  crawlId = NULL,
+  modified = NULL,
+  higherGeography = NULL,
+  fieldNumber = NULL,
+  parentEventId = NULL,
+  samplingProtocol = NULL,
+  sampleSizeUnit = NULL,
+  pathway = NULL,
+  gadmLevel0Gid = NULL,
+  gadmLevel1Gid = NULL,
+  gadmLevel2Gid = NULL,
+  gadmLevel3Gid = NULL,
+  earliestEonOrLowestEonothem = NULL,
+  latestEonOrHighestEonothem = NULL,
+  earliestEraOrLowestErathem = NULL,
+  latestEraOrHighestErathem = NULL,
+  earliestPeriodOrLowestSystem = NULL,
+  latestPeriodOrHighestSystem = NULL,
+  earliestEpochOrLowestSeries = NULL,
+  latestEpochOrHighestSeries = NULL,
+  earliestAgeOrLowestStage = NULL,
+  latestAgeOrHighestStage = NULL,
+  lowestBiostratigraphicZone = NULL,
+  highestBiostratigraphicZone = NULL,
+  group = NULL,
+  formation = NULL,
+  member = NULL,
+  bed = NULL,
+  associatedSequences = NULL,
+  nucleotideSequence.nucleotideSequenceID = NULL,
+  nucleotideSequence.targetGene = NULL,
+  nucleotideSequence.sequence = NULL,
+  nucleotideSequence.sequenceLength = NULL,
+  nucleotideSequence.gcContent = NULL,
+  nucleotideSequence.nonIupacFraction = NULL,
+  nucleotideSequence.nonACGTNFraction = NULL,
+  nucleotideSequence.nFraction = NULL,
+  nucleotideSequence.nRunsCapped = NULL,
+  nucleotideSequence.naturalLanguageDetected = NULL,
+  nucleotideSequence.endsTrimmed = NULL,
+  nucleotideSequence.gapsOrWhitespaceRemoved = NULL,
+  nucleotideSequence.invalid = NULL,
+  isSequenced = NULL,
+  startDayOfYear = NULL,
+  endDayOfYear = NULL,
+  checklistKey = "7ddf754f-d193-4cc9-b351-99906754a03b",
+  limit = 500,
+  start = 0,
+  fields = "all",
+  return = NULL,
+  facet = NULL,
+  facetMincount = NULL,
+  facetMultiselect = NULL,
+  skip_validate = TRUE,
+  curlopts = list(http_version = 2),
+  ...
+)
+```
+
+## Arguments
+
+- taxonKey:
+
+  (numeric) A taxon key from the GBIF backbone. All included and synonym
+  taxa are included in the search, so a search for aves with
+  taxononKey=212 will match all birds, no matter which species. You can
+  pass many keys to `occ_search(taxonKey=c("N","V2"))`.
+
+- scientificName:
+
+  A scientific name from the GBIF backbone. All included and synonym
+  taxa are included in the search.
+
+- country:
+
+  (character) The 2-letter country code (ISO-3166-1) in which the
+  occurrence was recorded.
+  [`enumeration_country()`](https://docs.ropensci.org/rgbif/reference/enumeration.md).
+
+- publishingCountry:
+
+  The 2-letter country code (as per ISO-3166-1) of the country in which
+  the occurrence was recorded. See
+  [`enumeration_country()`](https://docs.ropensci.org/rgbif/reference/enumeration.md).
+
+- hasCoordinate:
+
+  (logical) Return only occurrence records with lat/long data (`TRUE`)
+  or all records (`FALSE`, default).
+
+- typeStatus:
+
+  Type status of the specimen. One of many
+  [options](https://www.gbif.org/occurrence/search?type_status=PARATYPE).
+
+- recordNumber:
+
+  Number recorded by collector of the data, different from GBIF record
+  number.
+
+- lastInterpreted:
+
+  Date the record was last modified in GBIF, in ISO 8601 format: yyyy,
+  yyyy-MM, yyyy-MM-dd, or MM-dd. Supports range queries,
+  'smaller,larger' (e.g., '1990,1991', whereas '1991,1990' wouldn't
+  work).
+
+- continent:
+
+  The source supplied continent.
+
+  - "africa"
+
+  - "antarctica"
+
+  - "asia"
+
+  - "europe"
+
+  - "north_america"
+
+  - "oceania"
+
+  - "south_america"
+
+  Continent is not inferred but only populated if provided by the
+  dataset publisher. Applying this filter may exclude many relevant
+  records.
+
+- geometry:
+
+  (character) Searches for occurrences inside a polygon in Well Known
+  Text (WKT) format. A WKT shape written as either
+
+  - "POINT"
+
+  - "LINESTRING"
+
+  - "LINEARRING"
+
+  - "POLYGON"
+
+  - "MULTIPOLYGON"
+
+  For Example, "POLYGON((37.08 46.86,38.06 46.86,38.06 47.28,37.08
+  47.28, 37.0 46.8))". See also the section **WKT** below.
+
+- geom_big:
+
+  (character) One"bbox" or "asis" (default).
+
+- geom_size:
+
+  (integer) An integer indicating size of the cell. Default: 40.
+
+- geom_n:
+
+  (integer) An integer indicating number of cells in each dimension.
+  Default: 10.
+
+- recordedBy:
+
+  (character) The person who recorded the occurrence.
+
+- recordedByID:
+
+  (character) Identifier (e.g. ORCID) for the person who recorded the
+  occurrence
+
+- identifiedByID:
+
+  (character) Identifier (e.g. ORCID) for the person who provided the
+  taxonomic identification of the occurrence.
+
+- basisOfRecord:
+
+  (character) The specific nature of the data record. See
+  [here](https://dwc.tdwg.org/terms/#dwc:basisOfRecord).
+
+  - "FOSSIL_SPECIMEN"
+
+  - "HUMAN_OBSERVATION"
+
+  - "MATERIAL_CITATION"
+
+  - "MATERIAL_SAMPLE"
+
+  - "LIVING_SPECIMEN"
+
+  - "MACHINE_OBSERVATION"
+
+  - "OBSERVATION"
+
+  - "PRESERVED_SPECIMEN"
+
+  - "OCCURRENCE"
+
+- datasetKey:
+
+  (character) The occurrence dataset uuid key. That can be found in the
+  dataset page url. For example, "7e380070-f762-11e1-a439-00145 eb45e9a"
+  is the key for [Natural History Museum (London) Collection
+  Specimens](https://www.gbif.org/dataset/7e380070-f762-11e1-a439-00145eb45e9a).
+
+- eventDate:
+
+  (character) Occurrence date in ISO 8601 format: yyyy, yyyy-MM,
+  yyyy-MM-dd, or MM-dd. Supports range queries, 'smaller,larger'
+  ('1990,1991', whereas '1991,1990' wouldn't work).
+
+- catalogNumber:
+
+  (character) An identifier of any form assigned by the source within a
+  physical collection or digital dataset for the record which may not
+  unique, but should be fairly unique in combination with the
+  institution and collection code.
+
+- year:
+
+  The 4 digit year. A year of 98 will be interpreted as AD 98. Supports
+  range queries, 'smaller,larger' (e.g., '1990,1991', whereas 1991,
+  1990' wouldn't work).
+
+- month:
+
+  The month of the year, starting with 1 for January. Supports range
+  queries, 'smaller,larger' (e.g., '1,2', whereas '2,1' wouldn't work).
+
+- decimalLatitude:
+
+  Latitude in decimals between -90 and 90 based on WGS84. Supports range
+  queries, 'smaller,larger' (e.g., '25,30', whereas '30,25' wouldn't
+  work).
+
+- decimalLongitude:
+
+  Longitude in decimals between -180 and 180 based on WGS84. Supports
+  range queries (e.g., '-0.4,-0.2', whereas '-0.2,-0.4' wouldn't work).
+
+- elevation:
+
+  Elevation in meters above sea level. Supports range queries,
+  'smaller,larger' (e.g., '5,30', whereas '30,5' wouldn't work).
+
+- depth:
+
+  Depth in meters relative to elevation. For example 10 meters below a
+  lake surface with given elevation. Supports range queries,
+  'smaller,larger' (e.g., '5,30', whereas '30,5' wouldn't work).
+
+- institutionCode:
+
+  An identifier of any form assigned by the source to identify the
+  institution the record belongs to.
+
+- collectionCode:
+
+  (character) An identifier of any form assigned by the source to
+  identify the physical collection or digital dataset uniquely within
+  the text of an institution.
+
+- hasGeospatialIssue:
+
+  (logical) Includes/excludes occurrence records which contain spatial
+  issues (as determined in our record interpretation), i.e.
+  `hasGeospatialIssue=TRUE` returns only those records with spatial
+  issues while `hasGeospatialIssue=FALSE` includes only records without
+  spatial issues. The absence of this parameter returns any record with
+  or without spatial issues.
+
+- issue:
+
+  (character) One or more of many possible issues with each occurrence
+  record. Issues passed to this parameter filter results by the issue.
+  One of many
+  [options](https://gbif.github.io/gbif-api/apidocs/org/gbif/api/vocabulary/OccurrenceIssue.html).
+  See [here](https://data-blog.gbif.org/post/issues-and-flags/) for
+  definitions.
+
+- search:
+
+  (character) Query terms. The value for this parameter can be a simple
+  word or a phrase. For example,
+  [search="puma"](https://www.gbif.org/occurrence/search?q=puma)
+
+- mediaType:
+
+  (character) Media type of "MovingImage", "Sound", or "StillImage".
+
+- subgenusKey:
+
+  (numeric) Subgenus classification key.
+
+- repatriated:
+
+  (character) Searches for records whose publishing country is different
+  to the country where the record was recorded in.
+
+- phylumKey:
+
+  (numeric) Phylum classification key.
+
+- kingdomKey:
+
+  (numeric) Kingdom classification key.
+
+- classKey:
+
+  (numeric) Class classification key.
+
+- orderKey:
+
+  (numeric) Order classification key.
+
+- familyKey:
+
+  (numeric) Family classification key.
+
+- genusKey:
+
+  (numeric) Genus classification key.
+
+- speciesKey:
+
+  (numeric) Species classification key.
+
+- establishmentMeans:
+
+  (character) provides information about whether an organism or
+  organisms have been introduced to a given place and time through the
+  direct or indirect activity of modern humans.
+
+  - "Introduced"
+
+  - "Native"
+
+  - "NativeReintroduced"
+
+  - "Vagrant"
+
+  - "Uncertain"
+
+  - "IntroducedAssistedColonisation"
+
+- degreeOfEstablishment:
+
+  (character) Provides information about degree to which an Organism
+  survives, reproduces, and expands its range at the given place and
+  time. One of many
+  [options](https://www.gbif.org/occurrence/search?advanced=1&degree_of_establishment=Managed).
+
+- protocol:
+
+  (character) Protocol or mechanism used to provide the occurrence
+  record. One of many
+  [options](https://www.gbif.org/occurrence/search?protocol=DWC_ARCHIVE&advanced=1).
+
+- license:
+
+  (character) The type license applied to the dataset or record.
+
+  - "CC0_1_0"
+
+  - "CC_BY_4_0"
+
+  - "CC_BY_NC_4_0"
+
+- organismId:
+
+  (numeric) An identifier for the Organism instance (as opposed to a
+  particular digital record of the Organism). May be a globally unique
+  identifier or an identifier specific to the data set.
+
+- publishingOrg:
+
+  (character) The publishing organization key (a UUID).
+
+- stateProvince:
+
+  (character) The name of the next smaller administrative region than
+  country (state, province, canton, department, region, etc.) in which
+  the Location occurs.
+
+- waterBody:
+
+  (character) The name of the water body in which the locations occur
+
+- locality:
+
+  (character) The specific description of the place.
+
+- occurrenceStatus:
+
+  (character) Default is "PRESENT". Specify whether search should return
+  "PRESENT" or "ABSENT" data.
+
+- gadmGid:
+
+  (character) The gadm id of the area occurrences are desired from.
+  https://gadm.org/.
+
+- coordinateUncertaintyInMeters:
+
+  A number or range between 0-1,000,000 which specifies the desired
+  coordinate uncertainty. A coordinateUncertainty InMeters=1000 will be
+  interpreted all records with exactly 1000m. Supports range queries,
+  'smaller,larger' (e.g., '1000,10000', whereas '10000,1000' wouldn't
+  work).
+
+- verbatimScientificName:
+
+  (character) Scientific name as provided by the source.
+
+- eventId:
+
+  (character) identifier(s) for a sampling event.
+
+- identifiedBy:
+
+  (character) names of people, groups, or organizations.
+
+- networkKey:
+
+  (character) The occurrence network key (a uuid) who assigned the Taxon
+  to the subject.
+
+- verbatimTaxonId:
+
+  (character) The taxon identifier provided to GBIF by the data
+  publisher.
+
+- occurrenceId:
+
+  (character) occurrence id from source.
+
+- organismQuantity:
+
+  A number or range which specifies the desired organism quantity. An
+  organismQuantity=5 will be interpreted all records with exactly 5.
+  Supports range queries, smaller,larger (e.g., '5,20', whereas '20,5'
+  wouldn't work).
+
+- organismQuantityType:
+
+  (character) The type of quantification system used for the quantity of
+  organisms. For example, "individuals" or "biomass".
+
+- relativeOrganismQuantity:
+
+  (numeric) A relativeOrganismQuantity=0.1 will be interpreted all
+  records with exactly 0.1 The relative measurement of the quantity of
+  the organism (a number between 0-1). Supports range queries,
+  "smaller,larger" (e.g., '0.1,0.5', whereas '0.5,0.1' wouldn't work).
+
+- iucnRedListCategory:
+
+  (character) The IUCN threat status category.
+
+  - "NE" (Not Evaluated)
+
+  - "DD" (Data Deficient)
+
+  - "LC" (Least Concern)
+
+  - "NT" (Near Threatened)
+
+  - "VU" (Vulnerable)
+
+  - "EN" (Endangered)
+
+  - "CR" (Critically Endangered)
+
+  - "EX" (Extinct)
+
+  - "EW" (Extinct in the Wild)
+
+- lifeStage:
+
+  (character) the life stage of the occurrence. One of many
+  [options](https://www.gbif.org/occurrence/search?advanced=1&life_stage=Tadpole).
+
+- isInCluster:
+
+  (logical) identify potentially related records on GBIF.
+
+- distanceFromCentroidInMeters:
+
+  A number or range. A value of "2000,\*" means at least 2km from known
+  centroids. A value of "0" would mean occurrences exactly on known
+  centroids. A value of "0,2000" would mean within 2km of centroids. Max
+  value is 5000.
+
+- geoDistance:
+
+  (character) Filters to match occurrence records with coordinate values
+  within a specified distance of a coordinate. Distance may be specified
+  in kilometres (km) or metres (m). Example : "90,100,5km"
+
+- sex:
+
+  (character) The sex of the biological individual(s) represented in the
+  occurrence.
+
+- dwcaExtension:
+
+  (character) A known Darwin Core Archive extension RowType. Limits the
+  search to occurrences which have this extension, although they will
+  not necessarily have any useful data recorded using the extension.
+
+- gbifId:
+
+  (numeric) The unique GBIF key for a single occurrence.
+
+- gbifRegion:
+
+  (character) Gbif region based on country code.
+
+- projectId:
+
+  (character) The identifier for a project, which is often assigned by a
+  funded programme.
+
+- programme:
+
+  (character) A group of activities, often associated with a specific
+  funding stream, such as the GBIF BID programme.
+
+- preparations:
+
+  (character) Preparation or preservation method for a specimen.
+
+- datasetId:
+
+  (character) The ID of the dataset. Parameter may be repeated. Example
+  : https://doi.org/10.1594/PANGAEA.315492
+
+- datasetName:
+
+  (character) The exact name of the dataset. Not the same as dataset
+  title.
+
+- publishedByGbifRegion:
+
+  (character) GBIF region based on the owning organization's country.
+
+- island:
+
+  (character) The name of the island on or near which the location
+  occurs.
+
+- islandGroup:
+
+  (character) The name of the island group in which the location occurs.
+
+- taxonId:
+
+  (character) The taxon identifier provided to GBIF by the data
+  publisher. Example : urn:lsid:dyntaxa.se:Taxon:103026
+
+- taxonConceptId:
+
+  (character) An identifier for the taxonomic concept to which the
+  record refers - not for the nomenclatural details of a taxon. Example
+  : 8fa58e08-08de-4ac1-b69c-1235340b7001
+
+- taxonomicStatus:
+
+  (character) A taxonomic status. Example : SYNONYM
+
+- acceptedTaxonKey:
+
+  (numeric) A taxon key from the GBIF backbone. Only synonym taxa are
+  included in the search, so a search for Aves with
+  acceptedTaxonKey="V2" will match occurrences identified as birds, but
+  not any known family, genus or species of bird.
+
+- collectionKey:
+
+  (character) A key (UUID) for a collection registered in the Global
+  Registry of Scientific Collections. Example :
+  dceb8d52-094c-4c2c-8960-75e0097c6861
+
+- institutionKey:
+
+  (character) A key (UUID) for an institution registered in the Global
+  Registry of Scientific Collections.
+
+- otherCatalogNumbers:
+
+  (character) Previous or alternate fully qualified catalog numbers.
+
+- georeferencedBy:
+
+  (character) Name of a person, group, or organization who determined
+  the georeference (spatial representation) for the location. Example :
+  Brad Millen
+
+- installationKey:
+
+  (character) The occurrence installation key (a UUID). Example :
+  17a83780-3060-4851-9d6f-029d5fcb81c9
+
+- hostingOrganizationKey:
+
+  (character) The key (UUID) of the publishing organization whose
+  installation (server) hosts the original dataset. Example :
+  fbca90e3-8aed-48b1-84e3-369afbd000ce
+
+- crawlId:
+
+  (numeric) Crawl attempt that harvested this record.
+
+- modified:
+
+  (character) The most recent date-time on which the occurrence was
+  changed, according to the publisher. Can be a range. Example :
+  2023-02-20
+
+- higherGeography:
+
+  (character) Geographic name less specific than the information
+  captured in the locality term.
+
+- fieldNumber:
+
+  (character) An identifier given to the event in the field. Often
+  serves as a link between field notes and the event.
+
+- parentEventId:
+
+  (character) An identifier for the information associated with a
+  sampling event.
+
+- samplingProtocol:
+
+  (character) The name of, reference to, or description of the method or
+  protocol used during a sampling event. Example : malaise trap
+
+- sampleSizeUnit:
+
+  (character) The unit of measurement of the size (time duration,
+  length, area, or volume) of a sample in a sampling event. Example :
+  hectares
+
+- pathway:
+
+  (character) The process by which an organism came to be in a given
+  place at a given time, as defined in the GBIF Pathway vocabulary.
+  Example : Agriculture
+
+- gadmLevel0Gid:
+
+  (character) A GADM geographic identifier at the zero level, for
+  example AGO.
+
+- gadmLevel1Gid:
+
+  (character) A GADM geographic identifier at the first level, for
+  example AGO.1_1.
+
+- gadmLevel2Gid:
+
+  (character) A GADM geographic identifier at the second level, for
+  example AFG.1.1_1.
+
+- gadmLevel3Gid:
+
+  (character) A GADM geographic identifier at the third level, for
+  example AFG.1.1.1_1.
+
+- earliestEonOrLowestEonothem:
+
+  (character) geochronologic era term.
+
+- latestEonOrHighestEonothem:
+
+  (character) geochronologic era term.
+
+- earliestEraOrLowestErathem:
+
+  (character) geochronologic era term.
+
+- latestEraOrHighestErathem:
+
+  (character) geochronologic era term.
+
+- earliestPeriodOrLowestSystem:
+
+  (character) geochronologic era term.
+
+- latestPeriodOrHighestSystem:
+
+  (character) geochronologic era term.
+
+- earliestEpochOrLowestSeries:
+
+  (character) geochronologic era term.
+
+- latestEpochOrHighestSeries:
+
+  (character) geochronologic era term.
+
+- earliestAgeOrLowestStage:
+
+  (character) geochronologic era term.
+
+- latestAgeOrHighestStage:
+
+  (character) geochronologic era term.
+
+- lowestBiostratigraphicZone:
+
+  (character) geochronologic era term.
+
+- highestBiostratigraphicZone:
+
+  (character) geochronologic era term.
+
+- group:
+
+  (character) The full name of the lithostratigraphic group from which
+  the material entity was collected.
+
+- formation:
+
+  (character) The full name of the lithostratigraphic formation from
+  which the material entity was collected.
+
+- member:
+
+  (character) The full name of the lithostratigraphic member from which
+  the material entity was collected.
+
+- bed:
+
+  (character) The full name of the lithostratigraphic bed from which the
+  material entity was collected.
+
+- associatedSequences:
+
+  (character) Identifier (publication, global unique identifier, URI) of
+  genetic sequence information associated with the material entity.
+  Example : http://www.ncbi.nlm.nih.gov/nuccore/U34853.1
+
+- nucleotideSequence.nucleotideSequenceID:
+
+  (character) Identifier for the nucleotide sequence associated with the
+  occurrence.
+
+- nucleotideSequence.targetGene:
+
+  (character) Gene targeted by the nucleotide sequence. See possible
+  values at <https://registry.gbif.org/vocabulary/target_gene/concepts>
+
+- nucleotideSequence.sequence:
+
+  (character) Nucleotide sequence string.
+
+- nucleotideSequence.sequenceLength:
+
+  (numeric) Length of the nucleotide sequence.
+
+- nucleotideSequence.gcContent:
+
+  (numeric) GC content fraction or range.
+
+- nucleotideSequence.nonIupacFraction:
+
+  (numeric) Fraction or range of non-IUPAC characters in the sequence.
+
+- nucleotideSequence.nonACGTNFraction:
+
+  (numeric) Fraction or range of characters outside A, C, G, T, and N.
+
+- nucleotideSequence.nFraction:
+
+  (numeric) Fraction or range of N characters in the sequence.
+
+- nucleotideSequence.nRunsCapped:
+
+  (numeric) Count or range of capped N runs in the sequence.
+
+- nucleotideSequence.naturalLanguageDetected:
+
+  (logical) Whether natural language was detected in the sequence.
+
+- nucleotideSequence.endsTrimmed:
+
+  (logical) Whether sequence ends were trimmed.
+
+- nucleotideSequence.gapsOrWhitespaceRemoved:
+
+  (logical) Whether gaps or whitespace were removed from the sequence.
+
+- nucleotideSequence.invalid:
+
+  (logical) Whether the sequence is marked as invalid.
+
+- isSequenced:
+
+  (logical) Indicates whether `associatedSequences` genetic sequence
+  information exists.
+
+- startDayOfYear:
+
+  (numeric) The earliest integer day of the year on which the event
+  occurred.
+
+- endDayOfYear:
+
+  (numeric) The latest integer day of the year on which the event
+  occurred.
+
+- checklistKey:
+
+  (character) The checklist uuid. This determines which taxonomy will be
+  used for the search in conjunction with other taxon keys or
+  scientificName. If this is not specified, the GBIF backbone taxonomy
+  will be used.
+
+- limit:
+
+  Number of records to return. Default: 500. Note that the per request
+  maximum is 300, but since we set it at 500 for the function, we do two
+  requests to get you the 500 records (if there are that many). Note
+  that there is a hard maximum of 100,000, which is calculated as the
+  `limit+start`, so `start=99,000` and `limit=2000` won't work
+
+- start:
+
+  Record number to start at. Use in combination with limit to page
+  through results. Note that we do the paging internally for you, but
+  you can manually set the `start` parameter
+
+- fields:
+
+  (character) Default ('all') returns all fields. 'minimal' returns just
+  taxon name, key, datasetKey, latitude, and longitute. Or specify each
+  field you want returned by name, e.g. fields =
+  c('name','latitude','elevation').
+
+- return:
+
+  Defunct. All components (meta, hierarchy, data, media, facets) are
+  returned now; index to the one(s) you want. See
+  [`occ_data()`](https://docs.ropensci.org/rgbif/reference/occ_data.md)
+  if you just want the data component
+
+- facet:
+
+  (character) a character vector of length 1 or greater. Required.
+
+- facetMincount:
+
+  (numeric) minimum number of records to be included in the faceting
+  results
+
+- facetMultiselect:
+
+  (logical) Set to `TRUE` to still return counts for values that are not
+  currently filtered. See examples. Default: `FALSE`
+
+  **Faceting**: All fields can be faceted on except for last
+  "lastInterpreted", "eventDate", and "geometry"
+
+  You can do facet searches alongside searching occurrence data, and
+  return both, or only return facets, or only occurrence data, etc.
+
+- skip_validate:
+
+  (logical) whether to skip `wellknown::validate_wkt` call or not.
+  passed down to
+  [`check_wkt()`](https://docs.ropensci.org/rgbif/reference/check_wkt.md).
+  Default: `TRUE`
+
+- curlopts:
+
+  list of named curl options passed on to
+  [`HttpClient`](https://docs.ropensci.org/crul/reference/HttpClient.html).
+  see
+  [`curl::curl_options`](https://jeroen.r-universe.dev/curl/reference/curl_options.html)
+  for curl options
+
+- ...:
+
+  additional facet parameters
+
+## Value
+
+An object of class `gbif`, which is a S3 class list, with slots for
+metadata (`meta`), the occurrence data itself (`data`), the taxonomic
+hierarchy data (`hier`), media metadata (`media`), taxonomic
+classifications (`classifications`), and facets (`facets`). In addition,
+the object has attributes listing the user supplied arguments and
+whether it was a 'single' or 'many' search; that is, if you supply two
+values of the `datasetKey` parameter to searches are done, and it's a
+'many'. `meta` is a list of length four with offset, limit, endOfRecords
+and count fields. `data` is a tibble (aka data.frame). `hier` is a list
+of data.frames of the unique set of taxa found, where each data.frame is
+its taxonomic classification. `media` is a list of media objects, where
+each element holds a set of metadata about the media object.
+`classifications` is a named list of tibbles, with one tibble per
+checklistKey. Each tibble contains one row per occurrence with the full
+taxonomic classification path pivoted into camelCase columns:
+checklistKey, kingdomName, kingdomKey, phylumName, phylumKey, className,
+classKey, orderName, orderKey, familyName, familyKey, genusName,
+genusKey, subgenusName, subgenusKey, speciesName, speciesKey. The
+function dynamically discovers all taxonomic ranks from the API. Known
+checklists (COL, backbone) are shown with friendly names, while unknown
+checklists use their UUID.
+
+## Note
+
+Maximum number of records you can get with this function is 100,000. See
+https://www.gbif.org/developer/occurrence
+
+When numeric taxonomic keys (taxonKey, speciesKey, kingdomKey, etc.) are
+detected and checklistKey is set to COL XR (the default), the function
+automatically switches to the GBIF Backbone taxonomy checklistKey and
+issues a warning. These numeric keys are legacy identifiers. If you
+explicitly set checklistKey to Backbone or another taxonomy, no warning
+is issued. Consider migrating to COL XR identifiers using
+[`gbif_to_col()`](https://docs.ropensci.org/rgbif/reference/gbif_to_col.md).
+
+## Multiple values passed to a parameter
+
+There are some parameters you can pass multiple values to in a vector,
+each value of which produces a different request (multiple different
+requests = c("a","b")). Some parameters allow multiple values to be
+passed in the same request (multiple same request = "a;b") in a
+semicolon separated string (e.g., 'a;b'); if given we'll do a single
+request with that parameter repeated for each value given (e.g.,
+`foo=a&foo=b` if the parameter is `foo`).
+
+See article [Multiple
+Values](https://docs.ropensci.org/rgbif/articles/multiple_values.html).
+
+## Hierarchies
+
+Hierarchies are returned with each occurrence object. There is no option
+to return them from the API. However, within the `occ_search` function
+you can select whether to return just hierarchies, just data, all of
+data and hierarchies and metadata, or just metadata. If all hierarchies
+are the same we just return one for you.
+
+## curl debugging
+
+You can pass parameters not defined in this function into the call to
+the GBIF API to control things about the call itself using `curlopts`.
+See an example below that passes in the `verbose` function to get
+details on the http call.
+
+## WKT
+
+Examples of valid WKT objects:
+
+- 'POLYGON((-19.5 34.1, 27.8 34.1, 35.9 68.1, -25.3 68.1, -19.5 34.1))'
+
+- 'MULTIPOLYGON(((-123 38,-116 38,-116 43,-123 43,-123 38)),((-97 41,-93
+  41,-93 45,-97 45,-97 41)))'
+
+- 'POINT(-120 40)'
+
+- 'LINESTRING(3 4,10 50,20 25)'
+
+Note that GBIF expects counter-clockwise winding order for WKT. You can
+supply clockwise WKT, but GBIF treats it as an exclusion, so you get all
+data not inside the WKT area.
+[`occ_download()`](https://docs.ropensci.org/rgbif/reference/occ_download.md)
+behaves differently in that you should simply get no data back at all
+with clockwise WKT.
+
+## Long WKT
+
+Options for handling long WKT strings: Note that long WKT strings are
+specially handled when using `occ_search` or
+[`occ_data`](https://docs.ropensci.org/rgbif/reference/occ_data.md).
+Here are the three options for long WKT strings (\> 1500 characters),
+set one of these three via the parameter `geom_big`:
+
+- asis - the default setting. This means we don't do anything
+  internally. That is, we just pass on your WKT string just as we've
+  done before in this package.
+
+- axe - this option is deprecated since rgbif v3.8.0. Might return
+  error, since the GBIF's polygon interpretation has changed.
+
+  This method uses
+  [`sf::st_make_grid`](https://r-spatial.github.io/sf/reference/st_make_grid.html)
+  and
+  [`sf::st_intersection`](https://r-spatial.github.io/sf/reference/geos_binary_ops.html),
+  which has two parameters `cellsize` and `n`. You can tweak those
+  parameters here by tweaking `geom_size` and `geom_n`. `geom_size`
+  seems to be more useful in toggling the number of WKT strings you get
+  back.
+
+  See
+  [`wkt_parse`](https://docs.ropensci.org/rgbif/reference/wkt_parse.md)
+  to manually break make WKT bounding box from a larger WKT string, or
+  break a larger WKT string into many smaller ones.
+
+- bbox - this option checks whether your WKT string is longer than 1500
+  characters, and if it is we create a bounding box from the WKT, do the
+  GBIF search with that bounding box, then prune the resulting data to
+  only those occurrences in your original WKT string. There is a big
+  caveat however. Because we create a bounding box from the WKT, and the
+  `limit` parameter determines some subset of records to get, then when
+  we prune the resulting data to the WKT, the number of records you get
+  could be less than what you set with your `limit` parameter. However,
+  you could set the limit to be high enough so that you get all records
+  back found in that bounding box, then you'll get all the records
+  available within the WKT.
+
+## Counts
+
+There is a slight difference in the way records are counted here vs.
+results from
+[`occ_count`](https://docs.ropensci.org/rgbif/reference/occ_count.md).
+For equivalent outcomes, in this function use `hasCoordinate=TRUE`, and
+`hasGeospatialIssue=FALSE` to have the same outcome using
+[`occ_count`](https://docs.ropensci.org/rgbif/reference/occ_count.md)
+with `isGeoreferenced=TRUE`
+
+## References
+
+https://www.gbif.org/developer/occurrence#search
+
+## See also
+
+[`downloads()`](https://docs.ropensci.org/rgbif/reference/downloads.md),
+[`occ_data()`](https://docs.ropensci.org/rgbif/reference/occ_data.md)
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Search by species name, using \code{\link{name_backbone}} first to get key
+(key <- name_suggest(q='Helianthus annuus', rank='species')$data$key[1])
+occ_search(taxonKey=key, limit=2)
+
+# Return 20 results, this is the default by the way
+occ_search(taxonKey=key, limit=20)
+
+# Get just metadata
+occ_search(taxonKey=key, limit=0)$meta
+
+# Instead of getting a taxon key first, you can search for a name directly
+## However, note that using this approach (with \code{scientificName="..."})
+## you are getting synonyms too. The results for using \code{scientifcName} and
+## \code{taxonKey} parameters are the same in this case, but I wouldn't be surprised if for some
+## names they return different results
+occ_search(scientificName = 'Ursus americanus')
+key <- name_backbone(name = 'Ursus americanus', rank='species')$usageKey
+occ_search(taxonKey = key)
+
+# Search by dataset key
+occ_search(datasetKey='7b5d6a48-f762-11e1-a439-00145eb45e9a', limit=20)$data
+
+# Search by catalog number
+occ_search(catalogNumber="49366", limit=20)
+## separate requests: use a vector of strings
+occ_search(catalogNumber=c("49366","Bird.27847588"), limit=10)
+## one request, many instances of same parameter: use semi-colon sep. string
+occ_search(catalogNumber="49366;Bird.27847588", limit=10)
+
+# Get all data, not just lat/long and name
+occ_search(taxonKey=key, fields='all', limit=20)
+
+# Or get specific fields. Note that this isn't done on GBIF's side of things. This
+# is done in R, but before you get the return object, so other fields are garbage
+# collected
+occ_search(taxonKey=key, fields=c('name','basisOfRecord','protocol'), limit=20)
+
+# Use paging parameters (limit and start) to page. Note the different results
+# for the two queries below.
+occ_search(datasetKey='7b5d6a48-f762-11e1-a439-00145eb45e9a',start=10,limit=5)$data
+occ_search(datasetKey='7b5d6a48-f762-11e1-a439-00145eb45e9a',start=20,limit=5)$data
+
+# Many dataset keys
+## separate requests: use a vector of strings
+occ_search(datasetKey=c("50c9509d-22c7-4a22-a47d-8c48425ef4a7",
+   "7b5d6a48-f762-11e1-a439-00145eb45e9a"), limit=20)
+## one request, many instances of same parameter: use semi-colon sep. string
+v="50c9509d-22c7-4a22-a47d-8c48425ef4a7;7b5d6a48-f762-11e1-a439-00145eb45e9a"
+occ_search(datasetKey = v, limit=20)
+
+# Occurrence data: lat/long data, and associated metadata with occurrences
+## The `data` slot has a data.frame of all data together
+## for easy manipulation
+occ_search(taxonKey=key, limit=20)$data
+
+# Taxonomic hierarchy data
+## In the `hier` slot
+occ_search(taxonKey=key, limit=10)$hier
+
+# Search by recorder
+occ_search(recordedBy="smith", limit=20)
+
+# Many collector names
+occ_search(recordedBy=c("smith","BJ Stacey"), limit=20)
+
+# recordedByID
+occ_search(recordedByID="https://orcid.org/0000-0003-1691-239X", limit=20)
+
+# identifiedByID
+occ_search(identifiedByID="https://orcid.org/0000-0003-4710-2648", limit=20)
+
+# Pass in curl options for extra fun
+occ_search(taxonKey="Q2M4", limit=20, curlopts=list(verbose=TRUE))$hier
+occ_search(taxonKey="Q2M4", limit=20,
+  curlopts = list(
+    noprogress = FALSE,
+    progressfunction = function(down, up) {
+      cat(sprintf("up: %d | down %d\n", up, down))
+      return(TRUE)
+    }
+  )
+)$hier
+# occ_search(taxonKey="Q2M4", limit=20,
+#   curlopts = list(timeout_ms = 1))
+
+# Search for many species
+splist <- c('Cyanocitta stelleri', 'Junco hyemalis', 'Aix sponsa')
+keys <- sapply(splist, function(x) name_suggest(x)$data$key[1], USE.NAMES=FALSE)
+## separate requests: use a vector of strings
+occ_search(taxonKey = keys, limit=5)
+## one request, many instances of same parameter: use semi-colon sep. string
+occ_search(taxonKey = paste0(keys, collapse = ";"), limit=5)
+
+# Search using a synonym name
+#  Note that you'll see a message printing out that the accepted name will be used
+occ_search(scientificName = 'Pulsatilla patens', fields = c('name','scientificName'), limit=5)
+
+# Search on latitidue and longitude
+occ_search(decimalLatitude=48, decimalLongitude=10)
+
+# Search on a bounding box
+## in well known text format
+### polygon
+occ_search(geometry='POLYGON((30.1 10.1,40 40,20 40,10 20,30.1 10.1))', limit=20)
+### multipolygon
+wkt <- 'MULTIPOLYGON(((-123 38,-116 38,-116 43,-123 43,-123 38)),
+   ((-97 41,-93 41,-93 45,-97 45,-97 41)))'
+occ_search(geometry = gsub("\n\\s+", "", wkt), limit = 20)
+
+## taxonKey + WKT
+key <- name_suggest(q='Aesculus hippocastanum')$data$key[1]
+occ_search(taxonKey=key, geometry='POLYGON((30.1 10.1,40 40,20 40,10 20,30.1 10.1))',
+   limit=20)
+## or using bounding box, converted to WKT internally
+occ_search(geometry=c(-125.0,38.4,-121.8,40.9), limit=20)
+
+# Search on a long WKT string - too long for a GBIF search API request
+## We internally convert your WKT string to a bounding box
+##  then do the query
+##  then clip the results down to just those in the original polygon
+##  - Alternatively, you can set the parameter `geom_big="bbox"`
+##  - An additional alternative is to use the GBIF download API, see ?downloads
+wkt <- "POLYGON((-9.178796777343678 53.22769021556159,
+-12.167078027343678 51.56540789297837,
+-12.958093652343678 49.78333685689162,-11.024499902343678 49.21251756301334,
+-12.079187402343678 46.68179685941719,-15.067468652343678 45.83103608186854,
+-15.770593652343678 43.58271629699817,-15.067468652343678 41.57676278827219,
+-11.815515527343678 40.44938999172728,-12.958093652343678 37.72112962230871,
+-11.639734277343678 36.52987439429357,-8.299890527343678 34.96062625095747,
+-8.739343652343678 32.62357394385735,-5.223718652343678 30.90497915232165,
+1.1044063476563224 31.80562077746643,1.1044063476563224 30.754036557416256,
+6.905187597656322 32.02942785462211,5.147375097656322 32.99292810780193,
+9.629796972656322 34.164474406524725,10.860265722656322 32.91918014319603,
+14.551671972656322 33.72700959356651,13.409093847656322 34.888564192275204,
+16.748937597656322 35.104560368110114,19.561437597656322 34.81643887792552,
+18.594640722656322 36.38849705969625,22.989171972656322 37.162874858929854,
+19.825109472656322 39.50651757842751,13.760656347656322 38.89353140585116,
+14.112218847656322 42.36091601976124,10.596593847656322 41.11488736647705,
+9.366125097656322 43.70991402658437,5.059484472656322 42.62015372417812,
+2.3348750976563224 45.21526500321446,-0.7412967773436776 46.80225692528942,
+6.114171972656322 47.102229890207894,8.047765722656322 45.52399303437107,
+12.881750097656322 48.22681126957933,9.190343847656322 48.693079457106684,
+8.750890722656322 50.68283120621287,5.059484472656322 50.40356146487845,
+4.268468847656322 52.377558897655156,1.4559688476563224 53.28027243658647,
+0.8407344726563224 51.62000971578333,0.5770625976563224 49.32721423860726,
+-2.5869999023436776 49.49875947592088,-2.4991092773436776 51.18135535408638,
+-2.0596561523436776 52.53822562473851,-4.696374902343678 51.67454591918756,
+-5.311609277343678 50.009802108095776,-6.629968652343678 48.75106196817059,
+-7.684656152343678 50.12263634382465,-6.190515527343678 51.83776110910459,
+-5.047937402343678 54.267098895684235,-6.893640527343678 53.69860705549198,
+-8.915124902343678 54.77719740243195,-12.079187402343678 54.52294465763567,
+-13.573328027343678 53.437631551347174,
+-11.288171777343678 53.48995552517918,
+-9.178796777343678 53.22769021556159))"
+wkt <- gsub("\n", " ", wkt)
+
+#### Default option with large WKT string fails
+# res <- occ_search(geometry = wkt)
+
+#### if WKT too long, with 'geom_big=bbox': makes into bounding box
+res <- occ_search(geometry = wkt, geom_big = "bbox")$data
+
+# Search on country
+occ_search(country='US', fields=c('name','country'), limit=20)
+occ_search(country='FR', fields=c('name','country'), limit=20)
+occ_search(country='DE', fields=c('name','country'), limit=20)
+### separate requests: use a vector of strings
+occ_search(country=c('US','DE'), limit=20)
+### one request, many instances of same parameter: use semi-colon sep. string
+occ_search(country = 'US;DE', limit=20)
+
+# Get only occurrences with lat/long data
+occ_search(taxonKey=key, hasCoordinate=TRUE, limit=20)
+
+# Get only occurrences that were recorded as living specimens
+occ_search(taxonKey=key, basisOfRecord="LIVING_SPECIMEN", hasCoordinate=TRUE, limit=20)
+## multiple values in a vector = a separate request for each value
+occ_search(taxonKey=key,
+  basisOfRecord=c("LIVING_SPECIMEN", "HUMAN_OBSERVATION"), limit=20)
+## mutiple values in a single string, ";" separated = one request including all values
+occ_search(taxonKey=key,
+  basisOfRecord="LIVING_SPECIMEN;HUMAN_OBSERVATION", limit=20)
+
+# Get occurrences for a particular eventDate
+occ_search(taxonKey=key, eventDate="2013", limit=20)
+occ_search(taxonKey=key, year="2013", limit=20)
+occ_search(taxonKey=key, month="6", limit=20)
+
+# Get occurrences based on depth
+key <- name_backbone(name='Salmo salar', kingdom='animals')$speciesKey
+occ_search(taxonKey=key, depth="5", limit=20)
+
+# Get occurrences based on elevation
+key <- name_backbone(name='Puma concolor', kingdom='animals')$speciesKey
+occ_search(taxonKey=key, elevation=50, hasCoordinate=TRUE, limit=20)
+
+# Get occurrences based on institutionCode
+occ_search(institutionCode="TLMF", limit=20)
+### separate requests: use a vector of strings
+occ_search(institutionCode=c("TLMF","ArtDatabanken"), limit=20)
+### one request, many instances of same parameter: use semi-colon sep. string
+occ_search(institutionCode = "TLMF;ArtDatabanken", limit=20)
+
+# Get occurrences based on collectionCode
+occ_search(collectionCode="Floristic Databases MV - Higher Plants", limit=20)
+occ_search(collectionCode=c("Floristic Databases MV - Higher Plants","Artport"))
+
+# Get only those occurrences with spatial issues
+occ_search(taxonKey=key, hasGeospatialIssue=TRUE, limit=20)
+
+# Search using a query string
+occ_search(search = "kingfisher", limit=20)
+
+# search on repatriated - doesn't work right now
+# occ_search(repatriated = "")
+
+# search on phylumKey
+occ_search(phylumKey = 7707728, limit = 5)
+
+# search on kingdomKey
+occ_search(kingdomKey = "N", limit = 5)
+
+# search on classKey
+occ_search(classKey = "H6", limit = 5)
+
+# search on orderKey
+occ_search(orderKey = "X3", limit = 5)
+
+# search on familyKey
+occ_search(familyKey = "C7ZVG", limit = 5)
+
+# search on genusKey
+occ_search(genusKey = "9WLSS", limit = 5)
+
+# search on establishmentMeans
+occ_search(establishmentMeans = "INVASIVE", limit = 5)
+occ_search(establishmentMeans = "NATIVE", limit = 5)
+occ_search(establishmentMeans = "UNCERTAIN", limit = 5)
+
+# search on protocol
+occ_search(protocol = "DIGIR", limit = 5)
+
+# search on license
+occ_search(license = "CC_BY_4_0", limit = 5)
+
+# search on organismId
+occ_search(organismId = "100", limit = 5)
+
+# search on publishingOrg
+occ_search(publishingOrg = "28eb1a3f-1c15-4a95-931a-4af90ecb574d", limit = 5)
+
+# search on stateProvince
+occ_search(stateProvince = "California", limit = 5)
+
+# search on waterBody
+occ_search(waterBody = "AMAZONAS BASIN, RIO JURUA", limit = 5)
+
+# search on locality
+res <- occ_search(locality = c("Trondheim", "Hovekilen"), limit = 5)
+res$Trondheim$data
+res$Hovekilen$data
+
+
+
+# Range queries
+## See Detail for parameters that support range queries
+occ_search(depth='50,100') # this is a range depth, with lower/upper limits in character string
+occ_search(depth=c(50,100)) # this is not a range search, but does two searches for each depth
+
+## Range search with year
+occ_search(year='1999,2000', limit=20)
+
+## Range search with latitude
+occ_search(decimalLatitude='29.59,29.6')
+
+## Range search with distanceFromCentroidInMeters 
+occ_search(distanceFromCentroidInMeters = "2000,*") # at least 2km from centroids
+occ_search(distanceFromCentroidInMeters = "0,2000") # close to centroids within 2km 
+occ_search(distanceFromCentroidInMeters = 0) # exactly on centroids
+
+# Search by specimen type status
+## Look for possible values of the typeStatus parameter looking at the typestatus dataset
+occ_search(typeStatus = 'allotype', fields = c('name','typeStatus'))
+
+# Search by specimen record number
+## This is the record number of the person/group that submitted the data, not GBIF's numbers
+## You can see that many different groups have record number 1, so not super helpful
+occ_search(recordNumber = 1, fields = c('name','recordNumber','recordedBy'))
+
+# Search by last time interpreted: Date the record was last modified in GBIF
+## The lastInterpreted parameter accepts ISO 8601 format dates, including
+## yyyy, yyyy-MM, yyyy-MM-dd, or MM-dd. Range queries are accepted for lastInterpreted
+occ_search(lastInterpreted = '2014-04-02', fields = c('name','lastInterpreted'))
+
+# Search by continent
+## One of africa, antarctica, asia, europe, north_america, oceania, or south_america
+occ_search(continent = 'south_america')$meta
+occ_search(continent = 'africa')$meta
+occ_search(continent = 'oceania')$meta
+occ_search(continent = 'antarctica')$meta
+
+# Search for occurrences with images
+occ_search(mediaType = 'StillImage')$media
+occ_search(mediaType = 'MovingImage')$media
+occ_search(mediaType = 'Sound')$media
+
+# Query based on issues - see Details for options
+## one issue
+occ_search(taxonKey="N", issue='DEPTH_UNLIKELY', fields =
+   c('name','key','decimalLatitude','decimalLongitude','depth'))
+## two issues
+occ_search(taxonKey="N", issue=c('DEPTH_UNLIKELY','COORDINATE_ROUNDED'))
+# Show all records in the Arizona State Lichen Collection that cant be matched to the GBIF
+# backbone properly:
+occ_search(datasetKey='84c0e1a0-f762-11e1-a439-00145eb45e9a',
+   issue=c('TAXON_MATCH_NONE','TAXON_MATCH_HIGHERRANK'))
+
+# Parsing output by issue
+(res <- occ_search(geometry='POLYGON((30.1 10.1,40 40,20 40,10 20,30.1 10.1))', limit = 50))
+## what do issues mean, can print whole table, or search for matches
+head(gbif_issues())
+gbif_issues()[ gbif_issues()$code %in% c('cdround','cudc','gass84','txmathi'), ]
+## or parse issues in various ways
+### remove data rows with certain issue classes
+library('magrittr')
+res %>% occ_issues(gass84)
+### split issues into separate columns
+res %>% occ_issues(mutate = "split")
+### expand issues to more descriptive names
+res %>% occ_issues(mutate = "expand")
+### split and expand
+res %>% occ_issues(mutate = "split_expand")
+### split, expand, and remove an issue class
+res %>% occ_issues(-cudc, mutate = "split_expand")
+
+# If you try multiple values for two different parameters you are wacked on the hand
+# occ_search(taxonKey=c("N","Q2M4"), recordedBy=c("smith","BJ Stacey"))
+
+# Get a lot of data, here 1500 records for Helianthus annuus
+# out <- occ_search(taxonKey=key, limit=1500)
+# nrow(out$data)
+
+# If you pass in an invalid polygon you get hopefully informative errors
+
+### the WKT string is fine, but GBIF says bad polygon
+wkt <- 'POLYGON((-178.59375 64.83258989321493,-165.9375 59.24622380205539,
+-147.3046875 59.065977905449806,-130.78125 51.04484764446178,-125.859375 36.70806354647625,
+-112.1484375 23.367471303759686,-105.1171875 16.093320185359257,-86.8359375 9.23767076398516,
+-82.96875 2.9485268155066175,-82.6171875 -14.812060061226388,-74.8828125 -18.849111862023985,
+-77.34375 -47.661687803329166,-84.375 -49.975955187343295,174.7265625 -50.649460483096114,
+179.296875 -42.19189902447192,-176.8359375 -35.634976650677295,176.8359375 -31.835565983656227,
+163.4765625 -6.528187613695323,152.578125 1.894796132058301,135.703125 4.702353722559447,
+127.96875 15.077427674847987,127.96875 23.689804541429606,139.921875 32.06861069132688,
+149.4140625 42.65416193033991,159.2578125 48.3160811030533,168.3984375 57.019804336633165,
+178.2421875 59.95776046458139,-179.6484375 61.16708631440347,-178.59375 64.83258989321493))'
+
+# occ_search(geometry = gsub("\n", '', wkt))
+
+### unable to parse due to last number pair needing two numbers, not one
+# wkt <- 'POLYGON((-178.5 64.8,-165.9 59.2,-147.3 59.0,-130.7 51.0,-125.8))'
+# occ_search(geometry = wkt)
+
+### unable to parse due to unclosed string
+# wkt <- 'POLYGON((-178.5 64.8,-165.9 59.2,-147.3 59.0,-130.7 51.0))'
+# occ_search(geometry = wkt)
+### another of the same
+# wkt <- 'POLYGON((-178.5 64.8,-165.9 59.2,-147.3 59.0,-130.7 51.0,-125.8 36.7))'
+# occ_search(geometry = wkt)
+
+### returns no results
+# wkt <- 'LINESTRING(3 4,10 50,20 25)'
+# occ_search(geometry = wkt)
+
+### Apparently a point is allowed, but errors
+# wkt <- 'POINT(45 -122)'
+# occ_search(geometry = wkt)
+
+## Faceting
+x <- occ_search(facet = "country", limit = 0)
+x$facets
+x <- occ_search(facet = "establishmentMeans", limit = 10)
+x$facets
+x$data
+x <- occ_search(facet = c("country", "basisOfRecord"), limit = 10)
+x$data
+x$facets
+x$facets$country
+x$facets$basisOfRecord
+x$facets$basisOfRecord$count
+x <- occ_search(facet = "country", facetMincount = 30000000L, limit = 10)
+x$facets
+x$data
+# paging per each faceted variable
+(x <- occ_search(
+  facet = c("country", "basisOfRecord", "hasCoordinate"),
+  country.facetLimit = 3,
+  basisOfRecord.facetLimit = 6,
+  limit = 0
+))
+x$facets
+
+
+# You can set limit=0 to get number of results found
+occ_search(datasetKey = '7b5d6a48-f762-11e1-a439-00145eb45e9a', limit = 0)$meta
+occ_search(scientificName = 'Ursus americanus', limit = 0)$meta
+occ_search(scientificName = 'Ursus americanus', limit = 0)$meta
+} # }
+```
