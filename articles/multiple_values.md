@@ -1,0 +1,51 @@
+# Multiple Values
+
+There are some differences in how functions across **rgbif** behave with
+respect to many values given to a single parameter. Typically as a user
+does need to worry about these details, but it can sometimes make a
+difference.
+
+``` r
+
+# multiple API requests 
+occ_search(taxonKey=c("N","V2"))
+
+# single API request 
+occ_search(taxonKey="N;V2")
+```
+
+In `occ_search`, there are some parameters you can pass multiple values
+to in a vector, each value of which produces a **different** request
+`c("a","b")`. Some parameters allow multiple values to be passed in the
+**same** request in a semicolon separated string `"a;b"`. Only one
+argument at a time can have multiple values in different requests.
+
+    # works
+    occ_search(taxonKey="N;V2",basisOfRecord = c("PRESERVED_SPECIMEN","LIVING_SPECIMEN","MATERIAL_CITATION"))
+    occ_search(occurrenceStatus=c("PRESENT","ABSENT"))
+
+    # will give error 
+    occ_search(taxonKey=c("N","V2"),basisOfRecord = c("PRESERVED_SPECIMEN","LIVING_SPECIMEN","MATERIAL_CITATION"))
+    occ_search(occurrenceStatus="PRESENT;ABSENT")
+
+When using different requests `c("a","b")`, you will get back a list
+equal to the value of your vector. To extract data from multiple
+different requests, you will need something like the following.
+
+``` r
+
+occ_search(taxonKey=c("N","V2"))[[1]]$data
+```
+
+All
+[`occ_search()`](https://docs.ropensci.org/rgbif/reference/occ_search.md)
+arguments can take multiple values, except for the following arguments:
+
+- hasCoordinate
+- hasGeospatialIssue
+- occurrenceStatus
+- search
+- repatriated
+- isInCluster
+- limit
+- offset

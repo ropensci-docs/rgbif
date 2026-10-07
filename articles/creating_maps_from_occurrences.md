@@ -1,0 +1,215 @@
+# Creating maps from occurrences
+
+## Introduction
+
+Large datasets of millions of lat-lon points can be difficult to plot
+using `ggplot2` or base graphics. In these cases, using the [GBIF maps
+API](https://www.gbif.org/developer/maps) with
+[`rgbif::map_fetch()`](https://docs.ropensci.org/rgbif/reference/map_fetch.md)
+can be a good option.
+
+However, if you would like to make a complex graphic with different
+colors, shapes, and legends, using
+[`ggplot2::geom_sf()`](https://ggplot2.tidyverse.org/reference/ggsf.html)
+is a better option. Below I will give examples using both methods.
+
+## Using map_fetch()
+
+> requires \>= rgbif 3.7.8
+
+[`map_fetch()`](https://docs.ropensci.org/rgbif/reference/map_fetch.md)
+will return the default GBIF pixel map of all occurrences map as a
+`magick::magick-image`. To save this `png` you can use
+`magick::write_image()`.
+
+``` r
+
+map_fetch()
+```
+
+![](img/dot_map.png)
+
+It is also possible to make static maps that look like default
+[occurrence search](https://www.gbif.org/occurrence/map?taxon_key=V2)
+maps. See the maps api page for [available
+styles](https://tile.gbif.org/ui/).
+
+``` r
+
+map_fetch(taxonKey="",style="scaled.circles",base_sytle="gbif-light")
+```
+
+![](img/gbif-light-scaled-circles-birds.png)
+
+For “poly” styles it is also possible to plot set the `hexPerTile`
+parameter, so that the binned occurrence data is essentially shown at a
+higher resolution. A tile is an individual `png` image that is fetch
+from the API in order to make a map. The default settings of
+[`map_fetch()`](https://docs.ropensci.org/rgbif/reference/map_fetch.md)
+will fetch two images, so the image below has 400 hexagons across the
+width of map.
+
+``` r
+
+map_fetch(hexPerTile=200,style="green.poly",base_style="gbif-dark",bin="hex")
+```
+
+![](img/hexpertile.png)
+
+There is also the option to plot with polar or artic projections. For
+example, penguin records.
+
+``` r
+
+map_fetch(srs='EPSG:3031',taxonKey="44K",style='glacier.point', base_style="gbif-dark")
+```
+
+![](img/artic-peguins-glacier-point-gbif-dark.png)
+
+It is also possible to get views other than just the global map, by
+zooming in and selecting only certain map tiles with `z`, `x`, `y`.
+
+Selecting tiles can be tricky to get right, but with a little
+trial-and-error, you can usually get close to the map you want to have.
+One trick for getting the right tiles, is to look at this [demo
+page](https://api.gbif.org/v2/map/demo13.html#map=3/0/0/0), where the
+`z,x,y` values are printed on the center of each tile.
+
+For example, you can see what the tile values for a zoomed in map of
+Australia would be
+[here](https://api.gbif.org/v2/map/demo13.html#map=5/134.01/-21.64/0).
+
+``` r
+
+map_fetch(z=3,x=13:14,y=4:5)
+```
+
+![](img/AU-zoom.png)
+
+Be aware that selecting many tiles will create a large image, and might
+crash your R session. You can control the resolution of your final image
+with `format`, with `format="@4x.png"` being the highest possible value.
+
+Below are some areas to give you an idea of how `z`,`x`,`y` it are
+working.
+
+``` r
+
+# Europe
+map_fetch(z=3,x=7:9,y=0:2)
+# Africa
+map_fetch(z=3,x=7:10,y=2:5)
+# Hawaii
+map_fetch(z=6,x=6:9,y=23:25)
+# South Africa 
+map_fetch(z=5,x=34:38,y=19:22)
+# Ukraine 
+map_fetch(z=6,x=70:78,y=13:16)
+# Iceland
+map_fetch(z=6,x=55:59,y=8:9)
+# Capri Is. 
+map_fetch(z=12,x=4419:4420,y=1124:1125)
+```
+
+I suggest using this [interactive
+page](https://api.gbif.org/v2/map/demo13.html#map=3/0/0/0) for getting
+the tile numbers.
+
+Keep in mind that the the GBIF maps API wasn’t designed to make high
+quality static maps, like it is being used for in
+[`map_fetch()`](https://docs.ropensci.org/rgbif/reference/map_fetch.md).
+It was designed for interactive use on the [GBIF
+website](https://www.gbif.org/occurrence/map?), so the API design
+reflects this reality.
+
+When making maps, the **named paramters**, `taxonKey`, `datasetKey`,
+`country`, `publishingOrg`, `publishingCountry`, `year`, and
+`basisOfRecord` are going to be the easiest to use. However, It is also
+possible to make “any” map any search filter using `source=adhoc`.
+
+``` r
+
+# all occurrences with iucn status critically endangered 
+map_fetch(z=1,x=0:3,y=0:1,source="adhoc",iucn_red_list_category="CR",
+          style="iNaturalist.poly",base_style='osm-bright',bin="hex")
+```
+
+![](img/adhoc-iucn.png)
+
+[`map_fetch()`](https://docs.ropensci.org/rgbif/reference/map_fetch.md)
+can also tell when you have used a parameter that is no a default
+parameter and automatically switch to `source="adhoc"` for you. I have
+found that point style don’t work well with `source="adhoc"`, so
+[`map_fetch()`](https://docs.ropensci.org/rgbif/reference/map_fetch.md)
+will give a warning if you try to use a point style with
+`source="adhoc"`.
+
+Here are some examples of maps with different parameters and styles.
+
+`adhoc` is needed here because `recordedBy` isn’t one of the named
+paramters.
+[`map_fetch()`](https://docs.ropensci.org/rgbif/reference/map_fetch.md)
+automatically detects this and switches source to “adhoc”.
+
+``` r
+
+map_fetch(recordedBy="John Waller")
+```
+
+Occurrences in the OBIS network. Note that `squareSize` only works with
+`bin="square"`.
+
+``` r
+
+map_fetch(z=1,source="adhoc",style="green.poly",squareSize=64,bin="square",network_key="2b7c7b4f-4d4f-40d3-94de-c28b6fa054a6")
+```
+
+Map of Texas using the `gadm` filter.
+
+``` r
+
+map_fetch(z=4,x=6:7,y=4:5,gadm_gid="USA.44_1",style="blue.marker") 
+```
+
+[`map_fetch()`](https://docs.ropensci.org/rgbif/reference/map_fetch.md)
+is generally forgiving and will give you back at least some map with
+warnings or blank images when the parameters don’t work.
+
+``` r
+
+map_fetch(x=1:5) # no tiles exist past 2, so blank images are returned
+```
+
+All specimen bird records from the year 2000.
+
+``` r
+
+map_fetch(taxonKey="V2", basisOfRecord="PRESERVED_SPECIMEN", year=2000,style="classic-noborder.poly")  
+```
+
+Map of all country centroid locations.
+
+``` r
+
+map_fetch(distanceFromCentroidInMeters=0,base_style="osm-bright")
+```
+
+In general, adhoc maps are harder to make look nice, but usually picking
+a non-point style and tuning `hexPerTile` and perhaps also `squareSize`,
+will make a nice map. Also usually using a `z<0`, will help make maps
+look nicer.
+
+``` r
+
+map_fetch(z=1,x=0:3,y=0:1,ource="adhoc",project_id="BID-AF2015-0134-REG",style="green2.poly",hexPerTile=50)
+```
+
+A tip for getting the un-named adhoc parameters is to pull them from the
+occurrence search URL after looking them up via the [web
+interface](https://www.gbif.org/occurrence/map?advanced=1&project_id=BID-AF2015-0134-REG).
+
+``` r
+
+# https://www.gbif.org/occurrence/map?advanced=1&project_id=BID-AF2015-0134-REG
+map_fetch(source="adhoc",project_id="BID-AF2015-0134-REG") 
+```

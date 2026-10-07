@@ -1,0 +1,341 @@
+# Search for dataset metadata.
+
+Search for dataset metadata.
+
+## Usage
+
+``` r
+dataset_export(
+  query = NULL,
+  type = NULL,
+  publishingCountry = NULL,
+  subtype = NULL,
+  license = NULL,
+  keyword = NULL,
+  publishingOrg = NULL,
+  hostingOrg = NULL,
+  endorsingNodeKey = NULL,
+  decade = NULL,
+  projectId = NULL,
+  hostingCountry = NULL,
+  networkKey = NULL,
+  doi = NULL,
+  installationKey = NULL,
+  endpointType = NULL,
+  category = NULL,
+  continent = NULL,
+  taxonKey = NULL,
+  recordCount = NULL,
+  modifiedDate = NULL,
+  createdDate = NULL,
+  contactUserId = NULL,
+  contactEmail = NULL
+)
+
+dataset_search(
+  query = NULL,
+  type = NULL,
+  publishingCountry = NULL,
+  subtype = NULL,
+  license = NULL,
+  keyword = NULL,
+  publishingOrg = NULL,
+  hostingOrg = NULL,
+  endorsingNodeKey = NULL,
+  decade = NULL,
+  projectId = NULL,
+  hostingCountry = NULL,
+  networkKey = NULL,
+  doi = NULL,
+  installationKey = NULL,
+  endpointType = NULL,
+  category = NULL,
+  continent = NULL,
+  taxonKey = NULL,
+  recordCount = NULL,
+  modifiedDate = NULL,
+  createdDate = NULL,
+  contactUserId = NULL,
+  contactEmail = NULL,
+  facet = NULL,
+  facetLimit = NULL,
+  facetOffset = NULL,
+  facetMincount = NULL,
+  facetMultiselect = NULL,
+  limit = 100,
+  start = NULL,
+  description = FALSE,
+  curlopts = list(http_version = 2)
+)
+
+dataset_suggest(
+  query = NULL,
+  type = NULL,
+  publishingCountry = NULL,
+  subtype = NULL,
+  license = NULL,
+  keyword = NULL,
+  publishingOrg = NULL,
+  hostingOrg = NULL,
+  endorsingNodeKey = NULL,
+  decade = NULL,
+  projectId = NULL,
+  hostingCountry = NULL,
+  networkKey = NULL,
+  doi = NULL,
+  installationKey = NULL,
+  endpointType = NULL,
+  category = NULL,
+  continent = NULL,
+  taxonKey = NULL,
+  recordCount = NULL,
+  modifiedDate = NULL,
+  createdDate = NULL,
+  contactUserId = NULL,
+  contactEmail = NULL,
+  limit = 100,
+  start = NULL,
+  description = FALSE,
+  curlopts = list(http_version = 2)
+)
+```
+
+## Arguments
+
+- query:
+
+  Simple full text search parameter. The value for this parameter can be
+  a simple word or a phrase. Wildcards are not supported.
+
+- type:
+
+  The primary type of the dataset. Available values: "OCCURRENCE",
+  "CHECKLIST", "METADATA", "SAMPLING_EVENT", "MATERIAL_ENTITY".
+
+- publishingCountry:
+
+  Filters datasets by their owning organization's country given as a ISO
+  639-1 (2 letter) country code.
+
+- subtype:
+
+  The sub-type of the dataset.The sub-type of the dataset. Available
+  values: "TAXONOMIC_AUTHORITY", "NOMENCLATOR_AUTHORITY",
+  "INVENTORY_THEMATIC", "INVENTORY_REGIONAL", "GLOBAL_SPECIES_DATASET",
+  "DERIVED_FROM_OCCURRENCE", "SPECIMEN", "OBSERVATION".
+
+- license:
+
+  The dataset's licence. Available values: "CC0_1_0", "CC_BY_4_0",
+  "CC_BY_NC_4_0", "UNSPECIFIED", "UNSUPPORTED".
+
+- keyword:
+
+  Filters datasets by a case insensitive plain text keyword. The search
+  is done on the merged collection of tags, the dataset
+  keywordCollections and temporalCoverages.
+
+- publishingOrg:
+
+  Filters datasets by their publishing organization UUID key.
+
+- hostingOrg:
+
+  Filters datasets by their hosting organization UUID key
+
+- endorsingNodeKey:
+
+  Node UUID key that endorsed this dataset's publisher.
+
+- decade:
+
+  Filters datasets by their temporal coverage broken down to decades.
+  Decades are given as a full year, e.g. 1880, 1960, 2000, etc, and will
+  return datasets wholly contained in the decade as well as those that
+  cover the entire decade or more. Ranges can be used like this
+  "1800,1900".
+
+- projectId:
+
+  Filter or facet based on the project ID of a given dataset. A dataset
+  can have a project id if it is the result of a project. Multiple
+  datasets can have the same project id.
+
+- hostingCountry:
+
+  Filters datasets by their hosting organization's country given as a
+  ISO 639-1 (2 letter) country code.
+
+- networkKey:
+
+  Filters network UUID associated to a dataset.
+
+- doi:
+
+  DOI of the dataset.
+
+- installationKey:
+
+  Filters datasets by their installation UUID key.
+
+- endpointType:
+
+  Filters datasets by their endpoint type. Available values : EML, FEED,
+  WFS, WMS, TCS_RDF, TCS_XML, DWC_ARCHIVE, DIGIR, DIGIR_MANIS, TAPIR,
+  BIOCASE, BIOCASE_XML_ARCHIVE, OAI_PMH, COLDP, CAMTRAP_DP, BIOM_1_0,
+  BIOM_2_1, ACEF, TEXT_TREE, OTHER
+
+- category:
+
+  Filters datasets by their dataset category tag. For example "eDNA",
+  "CitizenScience", "Tracking".
+
+- continent:
+
+  Filters datasets by the continent of their spatial coverage. Available
+  values: "AFRICA", "ANTARCTICA", "ASIA", "EUROPE", "NORTH_AMERICA",
+  "OCEANIA", "SOUTH_AMERICA".
+
+- taxonKey:
+
+  Filters datasets by a taxon key from the GBIF backbone. The dataset
+  must index records linked to this taxon or any of its descendants.
+
+- recordCount:
+
+  Filters datasets by number of occurrence records. Accepts ranges, e.g.
+  "1000,5000".
+
+- modifiedDate:
+
+  Filters datasets by their last modified date. Accepts date ranges,
+  e.g. "2020-01-01,2021-01-01".
+
+- createdDate:
+
+  Filters datasets by their created date. Accepts date ranges, e.g.
+  "2020-01-01,2021-01-01".
+
+- contactUserId:
+
+  Filters datasets by the user ID of a dataset contact.
+
+- contactEmail:
+
+  Filters datasets by the email of a dataset contact.
+
+- facet:
+
+  A facet name used to retrieve the most frequent values for a field.
+
+- facetLimit:
+
+  Facet parameters allow paging requests using the parameters
+  facetOffset and facetLimit.
+
+- facetOffset:
+
+  Facet parameters allow paging requests using the parameters
+  facetOffset and facetLimit
+
+- facetMincount:
+
+  Used in combination with the facet parameter.
+
+- facetMultiselect:
+
+  Used in combination with the facet parameter.
+
+- limit:
+
+  Controls the number of results in the page. Using too high a value
+  will be overwritten with the default maximum threshold, depending on
+  the service. Sensible defaults are used so this may be omitted.
+
+- start:
+
+  Determines the offset for the search results. A limit of 20 and offset
+  of 40 will get the third page of 20 results. Some services have a
+  maximum offset.
+
+- description:
+
+  Logical whether to return descriptions.
+
+- curlopts:
+
+  options passed on to
+  [crul::HttpClient](https://docs.ropensci.org/crul/reference/HttpClient.html).
+
+## Value
+
+A `list` for `dataset_search()`. A `tibble` for `dataset_export()`.
+
+## Details
+
+`dataset_search()` searches and returns metadata on GBIF datasets from
+the registry. This function does not search occurrence data, only
+metadata on the datasets that contain may contain occurrence data. It
+also searches over other dataset types, such checklist and metadata
+datasets. Only a sample of results is returned.
+
+`dataset_export()` function will download a `tibble` of the results of a
+`dataset_search()`. This function is primarily useful if you want the
+full results of a `dataset_search()`.
+
+Use `dataset_search(facet="x",limit=0)$facets` to get simple group by
+counts for different parameters.
+
+## References
+
+https://techdocs.gbif.org/en/openapi/v1/registry#/Datasets/searchDatasets
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# search metadata on all datasets and return a sample
+dataset_search()
+# dataset_export() # download info on all +90K datasets 
+
+dataset_search(publishingCountry = "US")
+dataset_search(type = "OCCURRENCE") 
+dataset_search(keyword = "bird")
+dataset_search(subtype = "TAXONOMIC_AUTHORITY") 
+dataset_search(license = "CC0_1_0") 
+dataset_search(query = "frog") 
+dataset_search(publishingCountry = "UA") 
+dataset_search(publishingOrg = "e2e717bf-551a-4917-bdc9-4fa0f342c530") 
+dataset_search(hostingOrg = "7ce8aef0-9e92-11dc-8738-b8a03c50a862") 
+dataset_search(decade="1890,1990",limit=5)
+dataset_search(projectId = "GRIIS") 
+dataset_search(hostingCountry = "NO") 
+dataset_search(networkKey = "99d66b6c-9087-452f-a9d4-f15f2c2d0e7e") 
+dataset_search(doi='10.15468/aomfnb') 
+
+# search multiple values 
+dataset_search(projectId = "GRIIS;BID-AF2020-140-REG") 
+dataset_search(hostingCountry = "NO;SE")
+dataset_search(doi="10.15468/aomfnb;10.15468/igasai")
+dataset_search(installationKey = "d209e552-7e6e-4840-b13c-c0596ef36e55")
+dataset_search(category = "eDNA")
+dataset_search(recordCount = "10000,100000", limit = 5)
+dataset_search(modifiedDate = "2020-01-01,2021-01-01", limit = 5)
+dataset_search(createdDate = "2015-01-01,2016-01-01", limit = 5)
+dataset_search(contactEmail = "helpdesk@gbif.org", limit = 5)
+
+# multiple filters
+dataset_search(license = "CC0_1_0",subtype = "TAXONOMIC_AUTHORITY")
+# dataset_export(license = "CC0_1_0",subtype = "TAXONOMIC_AUTHORITY")
+
+# using dataset export to get all datasets 
+dataset_export(decade="1800,1900")
+dataset_export(projectId="GRIIS")
+
+# get simple group by counts 
+dataset_search(facet="type",limit=0,facetLimit=5)$facets 
+dataset_search(facet="publishingCountry",limit=0,facetLimit=5)$facets
+dataset_search(facet="license",limit=0,facetLimit=5, facetMincount=10000)
+
+} # }
+```

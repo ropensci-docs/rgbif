@@ -1,0 +1,13 @@
+{
+  "commit": {
+    "commit": "fdb4c4088a5c507be8366b39bb30d65efeaaa994",
+    "author": "John Waller <jhnwllr@gmail.com>",
+    "time": "2026-10-07T06:57:35Z",
+    "files": 233,
+    "merge": false,
+    "message": "v3.9.0 (#901)\n\n* docs: Document commits from master (v3.8.5..HEAD) in NEWS.md v3.9.0\n\nAdded missing commits from master to v3.9.0 release notes:\n- New functions: occ_term, occ_download_countries, occ_download_user_count, occ_download_organizations\n- API coverage improvements: Added missing parameters to dataset_*, occ_*, institution_*, collection_*, and organizations functions\n- checklistKey parameter support for occ_download at root and predicate levels\n- Bug fixes: ORCID/ROR syntax and deleted taxon key replacement\n\n* chore: Bump version to 3.9.0\n\n* REVDEPCHECK: Run reverse dependency checks for v3.9.0\n\n* fresh fixtures\n\n* fix: Address winbuilder NOTEs\n\n- Fix 404 URL: Change techdocs.gbif.org/en/openapi/v2/species to v1\n- Fix deprecated .Names: Change to names in structure() call in gbif_issues.R\n- Rebuild documentation for gbif_to_col.Rd\n\n* fix: Change ROR format in DESCRIPTION to avoid Author field NOTE\n\nChanged rOpenSci ROR from named comment to plain URL string to match R auto-generated Author field formatting\n\n* codemeta update\n\n* cran comments\n\n* Fix numeric-looking COL identifiers (#904)\n\n* Refresh test fixtures and update test expectations\n\n* REVDEPCHECK\n\n* updating cran comments\n\n* updating cran-comments\n\n* updating codemeta"
+  },
+  "repo": "https://github.com/ropensci/rgbif",
+  "pkg": "rgbif",
+  "time": "2026-10-07T08:24:36Z"
+}
