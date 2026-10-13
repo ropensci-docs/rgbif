@@ -1,0 +1,13 @@
+{
+  "commit": {
+    "commit": "ba0e26dba8dc2e6a156887e729c0123d468b236b",
+    "author": "John Waller <jhnwllr@gmail.com>",
+    "time": "2026-10-13T08:44:58Z",
+    "files": 5,
+    "merge": false,
+    "message": "Feature/update sql downloads docs (#908)\n\n* Update SQL downloads taxonomy docs\n\n* Fix real-requests badge and bump dev version\n\n* fixing #907"
+  },
+  "repo": "https://github.com/ropensci/rgbif",
+  "pkg": "rgbif",
+  "time": "2026-10-13T12:07:10Z"
+}
