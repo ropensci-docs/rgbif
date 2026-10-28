@@ -1,0 +1,167 @@
+# Working With Taxonomic Names
+
+In order to use GBIF mediated data effectively, you will often need to
+match a scientific name to a taxonomy. By default, **rgbif** now uses
+the [COL (Catalogue of Life) Extended
+Release](https://www.catalogueoflife.org/), which returns alpha-numeric
+taxon keys. To use the [GBIF Backbone
+Taxonomy](https://www.gbif.org/dataset/d7dddbf4-2cf0-4f39-9b2a-bb099caae36c)
+instead, explicitly set
+`checklistKey = "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c"`.
+
+The goal of **name matching** is to get back an unambiguous taxonomic
+key of the scientific name you are interested in. Having a key makes it
+easy for GBIF to know what you mean.
+
+`name_backbone` or `name_backbone_checklist` are the **best ways** to go
+from **scientific name** to **taxonkey**.
+
+``` r
+
+# Returns COL (Catalogue of Life) Extended Release alpha-numeric keys
+name_backbone(name="Calopteryx splendens") 
+# name_backbone(name="Calopteryx splendens", verbose=TRUE)
+
+# To use legacy GBIF Backbone Taxonomy, explicitly set checklistKey
+# name_backbone(name="Calopteryx splendens", checklistKey = "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c")
+```
+
+This will return a `data.frame` of the **single best match** for the
+name you supplied.
+
+The most interesting columns are:
+
+- **usageKey**: [Another
+  name](https://discourse.gbif.org/t/understanding-gbif-taxonomic-keys-usagekey-taxonkey-specieskey/3045)
+  for the taxonkey. With COL XR this is an alpha-numeric key (e.g.,
+  “Q2M4”).
+- **status** : `name_backbone` will always return only “ACCEPTED” names.
+- **matchType** : “EXACT”, “HIGHERRANK”, “FUZZY”, or “NONE” (see
+  below).  
+- **verbatim_name** : The name you supplied to GBIF. Useful for matching
+  back to your original data.
+
+A matchType of **“HIGHERRANK”** usually means the name is not in the
+taxonomy or it is not a species-level name (a genus, family, order …). A
+matchType of **“FUZZY”** means that the name you supplied may have been
+misspelled or is a variant not in the taxonomy. A matchType of
+**“Exact”** means the binomial name appears exactly as spelled by you in
+the taxonomy (note that it ignores authorship info).
+
+If you have **multiple names** to match, you can use
+`name_backbone_checklist`.
+
+``` r
+
+# This requires the newest version of rgbif
+name_list <- c(
+"Cirsium arvense (L.) Scop.", 
+"Calopteryx splendens", 
+"Puma concolor (Linnaeus, 1771)", 
+"Ceylonosticta alwisi", 
+"Fake species (John Waller 2021)", 
+"Calopteryx")
+
+name_backbone_checklist(name_list)
+```
+
+`name_backbone_checklist` will also work with a `data.frame` of name
+information also known as a **checklist**.
+
+``` r
+
+name_data <- data.frame(
+scientificName = c(
+  "Cirsium arvense (L.) Scop.", # a plant
+  "Calopteryx splendens (Harris, 1780)", # an insect
+  "Puma concolor (Linnaeus, 1771)", # a big cat
+  "Ceylonosticta alwisi (Priyadarshana & Wijewardhane, 2016)", # newly discovered insect 
+  "Puma concuolor (Linnaeus, 1771)", # a mis-spelled big cat
+  "Fake species (John Waller 2021)", # a fake species
+  "Calopteryx" # Just a Genus   
+), 
+kingdom = c(
+  "Plantae",
+  "Animalia",
+  "Animalia",
+  "Animalia",
+  "Animalia",
+  "Johnlia",
+  "Animalia"
+))
+
+name_backbone_checklist(name_data)
+# To return more than just the 'best' results, run
+# name_backbone_checklist(name_data,verbose=TRUE) 
+```
+
+When using `name_backbone_checklist` with a `data.frame`, you can
+include higher taxonomic information (genus, family, order, phylum,
+kingdom, rank) as columns. The **‘name’** column can also be one of
+**several commonly used aliases** (scientificName, sci_name, names,
+species, species_name, sp_name).
+
+``` r
+
+name_data <- data.frame(
+species = c(
+  "Cirsium arvense (L.) Scop.", # a plant
+  "Calopteryx splendens (Harris, 1780)", # an insect
+  "Puma concolor (Linnaeus, 1771)"
+  ), 
+ kingdom = c(
+  "Plantae",
+  "Animalia",
+  "Animalia"
+))
+
+name_backbone_checklist(name_data)
+```
+
+## Too many choices problem
+
+When two or more names exist in the taxonomy that have the **same name**
+but **different authorship** (homotypic synonyms), supplying just the
+binomial name will result in `matchType : "HIGHERRANK"`. Using the
+authorship information will allow GBIF to choose the correct name.
+
+Since `name_backbone` is designed to give back the best match, it’s not
+possible for the response to choose between the two names.
+
+## Using rcol to look up COL XR keys
+
+As of rgbif 3.9.0,
+[`name_suggest()`](https://docs.ropensci.org/rgbif/reference/name_suggest.md),
+[`name_lookup()`](https://docs.ropensci.org/rgbif/reference/name_lookup.md),
+and
+[`name_usage()`](https://docs.ropensci.org/rgbif/reference/name_usage.md)
+are deprecated and will primarily only work with the legacy GBIF
+Backbone Taxonomy. For COL XR support, consider using the `rcol` package
+instead.
+
+``` r
+
+library(rcol)
+
+col_search("Aves")
+col_suggest("Aves")   
+col_usage("V2") # the COL key for Aves
+```
+
+## Converting GBIF Backbone keys to COL XR keys
+
+To convert from a legacy GBIF Backbone key to a COL XR key, use
+[`gbif_to_col()`](https://docs.ropensci.org/rgbif/reference/gbif_to_col.md).
+
+``` r
+
+# 212 was the old GBIF Backbone key for birds 
+gbif_to_col(212)$usage$key # returns "V2"
+```
+
+## Further reading
+
+[migration
+guide](https://docs.ropensci.org/rgbif/articles/col_migration_guide.html)
+for more information on the transition to COL XR keys.
+[rcol](https://www.catalogueoflife.org/2026/06/20/rcol-r-package)

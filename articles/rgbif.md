@@ -1,0 +1,121 @@
+# Introduction to rgbif
+
+Search and retrieve data from the **Global Biodiversity Information
+Facility** (GBIF)
+
+## About the package
+
+`rgbif` is an R package to search and retrieve data from **GBIF**.
+`rgbif` wraps R code around the [GBIF
+API](https://www.gbif.org/developer/summary) to allow you to use GBIF
+from R.
+
+> **⚠️ Important:** Starting in rgbif 3.9.0, the default taxonomy
+> changed from GBIF Backbone to COL (Catalogue of Life) Extended
+> Release. This affects taxonomic keys returned by functions like
+> [`name_backbone()`](https://docs.ropensci.org/rgbif/reference/name_backbone.md)
+> and
+> [`occ_search()`](https://docs.ropensci.org/rgbif/reference/occ_search.md).
+> See the [Migration
+> Guide](https://docs.ropensci.org/rgbif/articles/col_migration_guide.md)
+> ([`vignette("col_migration_guide")`](https://docs.ropensci.org/rgbif/articles/col_migration_guide.md))
+> for details on updating your code.
+
+## Install rgbif
+
+``` r
+
+install.packages("rgbif")
+# Or install the development version from GitHub
+# remotes::install_github("ropensci/rgbif")
+library("rgbif")
+```
+
+## Get occurrence data from GBIF
+
+Users of GBIF are usually primarily interested in getting **occurrence
+data**.
+
+``` r
+
+# get some occurrences using the search API
+occ_search(scientificName = "Calopteryx splendens")
+occ_search(scientificName = "Calopteryx splendens",country = "DK")
+occ_search(scientificName = "Calopteryx splendens",country = "DK",year="1999,2005")
+
+# look up a single occurrence record
+occ_get(key=855998194) # not many reasons to do this but it exists
+```
+
+`occ_search` is a fast way to get data, but not necessarily the best.
+With `occ_search`, you are **limited to 100,000 records** per query.
+`occ_download` is usually a much better way to get occurrences from GBIF
+but requires you to have a [GBIF account](https://www.gbif.org/).
+
+You will need to set up your **GBIF account credentials** before this
+will work. Follow the instructions
+[here](https://docs.ropensci.org/rgbif/articles/gbif_credentials.html).
+
+The following will download all occurrences of *Lepus saxatilis*. You
+can use `name_backbone("Lepus saxatilis")` to find the taxonKey
+(usageKey).
+
+``` r
+
+# name_backbone("Lepus saxatilis")$usageKey
+gbif_download <- occ_download(pred("taxonKey", "6Q225"),format = "SIMPLE_CSV")
+
+occ_download_wait(gbif_download)
+
+d <- occ_download_get(gbif_download) %>%
+  occ_download_import()
+```
+
+See the article [Getting Occurrence Data From
+GBIF](https://docs.ropensci.org/rgbif/articles/getting_occurrence_data.html).
+
+## Look up taxonomic names
+
+In order to use GBIF mediated data effectively, you will often need to
+match a scientific name to the [GBIF Backbone
+Taxonomy](https://www.gbif.org/dataset/d7dddbf4-2cf0-4f39-9b2a-bb099caae36c).
+
+The goal of **name matching** is to get back an unambiguous taxonomic
+key (a number) of the scientific name you are interested in. Having a
+key makes it easy for GBIF to know what you mean.
+
+``` r
+
+name_backbone("Calopteryx") # get best match in the GBIF backbone
+name_backbone_checklist(c("Calopteryx splendens","Fake species Waller 2022")) # look up multiple names
+name_suggest("Calopteryx splendens") # can be useful if you aren't sure which name to use
+name_lookup("mammalia") # look outside of the GBIF backbone too
+```
+
+See the article [Working With Taxonomic
+Names](https://docs.ropensci.org/rgbif/articles/taxonomic_names.html).
+
+## Number of occurrences
+
+Get occurrence counts in GBIF.
+
+``` r
+
+occ_count() # total number in GBIF
+occ_count(georeferenced=TRUE) # all with coordinates
+occ_count(basisOfRecord='OBSERVATION') # with this basis of record
+occ_count(taxonKey="4QHKG", georeferenced=TRUE) # with coordinates
+occ_count(country="DK") # from Denmark 
+occ_count(datasetKey='9e7ea106-0bf8-4087-bb61-dfe4f29e0f17') # from a dataset
+occ_count(year=2012)
+```
+
+## Parse taxonomic names
+
+Interpret and break up a scientific name into parts.
+
+``` r
+
+name_parse("Fake name John Waller 2022")
+name_parse(c("Calopteryx splendens","Auricularia auricula-judae (Fr.) J.Schröt."))
+```

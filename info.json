@@ -1,0 +1,13 @@
+{
+  "commit": {
+    "commit": "b507adfc42291755614dc8b3816d407772c3c404",
+    "author": "jhnwllr <jhnwllr@gmail.com>",
+    "time": "2026-10-28T10:01:57Z",
+    "files": 1,
+    "merge": false,
+    "message": "fixes #909\n"
+  },
+  "repo": "https://github.com/ropensci/rgbif",
+  "pkg": "rgbif",
+  "time": "2026-10-28T13:24:05Z"
+}
